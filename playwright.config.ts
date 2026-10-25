@@ -34,8 +34,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
-    reuseExistingServer: true,
+    command:
+      'cross-env CLOUDFLARE_ENV=dev PAYLOAD_MIGRATE_REMOTE=false PAYLOAD_SECRET=local-test-placeholder BEMOAT_TEST_WRANGLER_PERSIST=.wrangler-test/e2e pnpm dev',
+    reuseExistingServer: false,
     url: 'http://localhost:3000',
   },
 })
