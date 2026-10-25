@@ -1,16 +1,31 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
 import {
   isWranglerPlaceholderId,
   scanWranglerEnvironmentIsolation,
-} from '../../scripts/guard-cloudflare-env'
+} from '../../.agents/skills/cloudflare-safety/scripts/guard-cloudflare-env'
 import { isRemoteBindingsAuthorized } from '../../src/lib/payloadBuildContext'
 
 const currentWrangler = readFileSync('wrangler.jsonc', 'utf8')
+const skillGuardPath = resolve('.agents/skills/cloudflare-safety/scripts/guard-cloudflare-env.ts')
+const rootGuardPath = resolve('scripts/guard-cloudflare-env.ts')
 
 describe('Cloudflare environment safety', () => {
+  it('keeps one authoritative guard in the project Skill path', () => {
+    const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
+      scripts?: { 'guard:cloudflare-env'?: string }
+    }
+
+    expect(existsSync(skillGuardPath)).toBe(true)
+    expect(existsSync(rootGuardPath)).toBe(false)
+    expect(packageJson.scripts?.['guard:cloudflare-env']).toContain(
+      '.agents/skills/cloudflare-safety/scripts/guard-cloudflare-env.ts',
+    )
+  })
+
   it('uses local bindings unless remote authorization is explicit', () => {
     expect(isRemoteBindingsAuthorized({ NODE_ENV: 'production' })).toBe(false)
     expect(isRemoteBindingsAuthorized({ NODE_ENV: 'production', PAYLOAD_MIGRATE_REMOTE: 'true' })).toBe(false)
