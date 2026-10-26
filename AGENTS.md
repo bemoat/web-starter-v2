@@ -11,8 +11,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 # Codex L0
 
 - This is a Codex-only repository. Use the canonical checkout and one exclusive writer/physical checkout; preserve all tracked, ignored, generated, and untracked WIP.
-- Before authorized work, recover live authority from GitHub: Epic #2, Issue #4, child #10, current branch/HEAD/PR/CI, effective scope, and exactly one current ONE NEXT. Do not rely on copied prompts or historical loaders.
+- Global MC Epic #2 (`https://github.com/bemoat/web-starter-v2/issues/2`) is the durable coordination pointer. Before authorized work, discover the currently active Issue/child, branch/HEAD/PR/CI, effective scope, and exactly one current ONE NEXT from live GitHub; do not hardcode a Batch or rely on copied prompts or historical loaders.
 - Founder authorization and the live Issue define WHAT/WHETHER; installed Skills define generic engineering HOW.
+- PStack Host dependency: resolve the pinned external source `michael-denyer/pstack-claude@356c6e0f978df729eb16f227d795f34d221c5aad` before relying on PStack behavior; stop if the installed Skill is absent or resolves elsewhere.
+- For Codex tool mapping, read `plugins/pstack/skills/poteto-mode/references/codex-tools.md` from that pinned source; do not add an adapter runtime, install/update PStack, or enable hooks.
 
 ## Progressive disclosure
 
