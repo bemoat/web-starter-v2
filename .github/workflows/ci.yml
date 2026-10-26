@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  CLOUDFLARE_ENV: dev
+  PAYLOAD_MIGRATE_REMOTE: 'false'
+  PAYLOAD_SECRET: ci-placeholder
+  BEMOAT_TEST_WRANGLER_PERSIST: .wrangler-test/state/v3
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check safety, lint, types and isolated integration tests
+        run: pnpm run check
+
+      - name: Build native OpenNext Worker with local bindings
+        run: |
+          pnpm exec opennextjs-cloudflare build --env=dev
+          test -s .open-next/worker.js
