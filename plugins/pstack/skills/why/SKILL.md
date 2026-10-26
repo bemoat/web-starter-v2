@@ -104,7 +104,7 @@ After Sources Consulted, if the user's `why` question is a precursor to changing
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in the `pstack-models.md` override sheet overrides each at runtime; `/setup-pstack` writes it and lists its path per runtime.
+Role defaults, stamped from the pinned upstream [`plugins/pstack/models.json`](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/plugins/pstack/models.json) (edit there and rerun the upstream [`tools/generate.mjs`](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/tools/generate.mjs)). Those generator files are not included in this repository-local package. A matching role line in the `pstack-models.md` override sheet overrides each at runtime; `/setup-pstack` writes it and lists its path per runtime.
 
 - why investigators: `opus`
 - why synthesizer: `opus`

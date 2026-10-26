@@ -119,7 +119,7 @@ The role lines are the same everywhere. What differs is the sheet path, how the 
 
 ## Models
 
-Stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`).
+Stamped from the pinned upstream [`plugins/pstack/models.json`](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/plugins/pstack/models.json); regenerate it there with [`tools/generate.mjs`](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/tools/generate.mjs). Those generator files are not included in this repository-local package.
 
 - Available Claude models: `opus`, `fable`, `sonnet`, `haiku`
 - Default panel: `opus`, `fable`, `sonnet`, `haiku`
