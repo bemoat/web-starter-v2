@@ -19,7 +19,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Git, ref, or PR start/publish/reentry: read `.agents/skills/git-delivery/SKILL.md`.
 - Local Cloudflare, D1/R2, or binding safety: read `.agents/skills/cloudflare-safety/SKILL.md`; keep checks local and read-only.
 - Nontrivial implementation or review: read only the relevant installed PStack Skill and required framework guide; avoid unrelated Skills.
-- When routes overlap, read the boundary-safety Skill first, then only the needed workflow Skill.
+- When routes overlap, read `.agents/skills/cloudflare-safety/SKILL.md` for the boundary, then only the needed workflow Skill.
 - This file is a routing index, not a dispatcher, registry, loader, controller, or duplicate PStack.
 
 ## Safety boundaries
