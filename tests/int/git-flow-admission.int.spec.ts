@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -89,21 +89,44 @@ describe('Git Flow delivery admission', () => {
   })
 
   it('rejects unsafe admission before invoking native Git Flow', () => {
-    const { fixtureRoot, remote, work } = createFixture(false)
+    const { fixtureRoot, work } = createFixture(false)
 
     try {
       runGit(work, ['remote', 'set-url', 'origin', join(fixtureRoot, 'wrong-origin.git')])
       expect(() => assertGitFlowAdmission('start', work)).toThrow('origin is not canonical')
 
-      runGit(work, ['remote', 'set-url', 'origin', remote])
+      runGit(work, ['remote', 'set-url', 'origin', 'https://github.com/bemoat/web-starter-v2.git'])
+      runGit(work, ['config', 'remote.origin.pushurl', join(fixtureRoot, 'wrong-push-origin.git')])
+      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+        'origin push URL is not canonical',
+      )
+
+      runGit(work, ['config', '--unset-all', 'remote.origin.pushurl'])
       writeFileSync(join(work, 'unowned-wip.txt'), 'preserve this WIP\n')
       expect(() => assertGitFlowAdmission('start', work)).toThrow(
         'tracked or unowned WIP is present',
       )
 
       rmSync(join(work, 'unowned-wip.txt'))
+      writeFileSync(join(work, '.git', 'info', 'exclude'), 'ignored-wip.txt\n', { flag: 'a' })
+      writeFileSync(join(work, 'ignored-wip.txt'), 'preserve this ignored WIP\n')
+      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+
+      rmSync(join(work, 'ignored-wip.txt'))
       runGit(work, ['switch', '-c', 'feature/4-git-flow-fixture'])
       expect(() => assertGitFlowAdmission('start', work)).toThrow('feature start requires dev')
+      expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
+      runGit(work, ['switch', 'dev'])
+      expect(() => assertGitFlowAdmission('publish', work)).toThrow(
+        'feature publish requires a feature branch',
+      )
+
+      mkdirSync(join(work, 'nested'))
+      expect(() => assertGitFlowAdmission('start', join(work, 'nested'))).toThrow(
+        'cwd is not the repository root',
+      )
       expect(runGit(work, ['branch', '--list', 'feature/4-wrong-ref']).trim()).toBe('')
     } finally {
       rmSync(fixtureRoot, { recursive: true, force: true })
@@ -115,8 +138,17 @@ describe('Git Flow delivery admission', () => {
       const { fixtureRoot, remote, work } = createFixture(true)
 
       try {
+        runGit(work, [
+          'remote',
+          'set-url',
+          'origin',
+          'https://github.com/bemoat/web-starter-v2.git',
+        ])
+        expect(() => assertGitFlowAdmission('start', work)).not.toThrow()
         runGit(work, ['flow', 'feature', 'start', '4-git-flow-fixture', '--no-fetch'])
         expect(runGit(work, ['branch', '--show-current']).trim()).toBe('feature/4-git-flow-fixture')
+        expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
+        runGit(work, ['remote', 'set-url', 'origin', remote])
         runGit(work, ['commit', '--allow-empty', '-m', 'fixture feature'])
         runGit(work, ['flow', 'feature', 'publish', '4-git-flow-fixture'])
 

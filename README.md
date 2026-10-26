@@ -25,8 +25,10 @@ After you click the `Deploy` button above, you'll want to have standalone copy o
 Batch B changes start from the protected `dev` branch and finish through a reviewed pull request into `dev`. Use the pinned `git-flow-next` CLI after admission confirms the canonical origin, one checkout, preserved WIP, and the expected ref:
 
 ```bash
+pnpm exec tsx .agents/skills/git-delivery/scripts/admission.ts start
 git flow init --local --main=main --develop=dev --no-create-branches -d
 git flow feature start <name> --no-fetch
+pnpm exec tsx .agents/skills/git-delivery/scripts/admission.ts publish
 git flow feature publish <name>
 ```
 

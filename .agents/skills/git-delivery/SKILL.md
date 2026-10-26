@@ -13,7 +13,7 @@ Before `git flow feature start` or `git flow feature publish`, verify all of the
 
 - `origin` is `https://github.com/bemoat/web-starter-v2.git`.
 - The checkout is the known workspace and has no competing writer.
-- Tracked, ignored, and generated WIP is identified and preserved. The known untracked `AGENTS.md` and `CLAUDE.md` files are preserved; other untracked WIP stops admission.
+- Tracked, ignored, and generated WIP is identified and preserved. The known untracked `AGENTS.md` and `CLAUDE.md` files and standard generated directories are preserved; other untracked or ignored WIP stops admission.
 - A feature starts from protected `dev` and publishes only a `feature/*` branch.
 - The current ref matches the command. Stop on a wrong ref, wrong origin, dirty unowned WIP, or an unexpected branch.
 
