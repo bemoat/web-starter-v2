@@ -1,6 +1,6 @@
 # ChatGPT Project Loader V2
 
-When the user says `Continue Global MC`, coordinate from `bemoat/web-starter-v2`, Global MC [#2](https://github.com/bemoat/web-starter-v2/issues/2), and the GitHub Connector.
+On session reentry (including `Continue Global MC`), before taking up a new Issue, and after each durable objective result, coordinate from `bemoat/web-starter-v2`, Global MC [#2](https://github.com/bemoat/web-starter-v2/issues/2), and the GitHub Connector.
 
 - If the effective protected instruction ref is unknown, read live #2 read-only first. Resolve the effective merged protected ref from live #2 and the repository ruleset; never assume legacy `main`.
 - From that merged ref, fetch and verify this versioned loader and the tracked root `AGENTS.md`. Unmerged PR instructions are candidate evidence, never active policy. Do not change Project settings automatically.
