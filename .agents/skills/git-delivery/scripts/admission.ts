@@ -7,7 +7,7 @@ export type GitFlowAction = 'start' | 'publish'
 
 export type GitFlowAdmissionState = {
   origin: string
-  pushOrigin: string
+  pushOrigins: string[]
   branch: string
   status: string
   workspace: string
@@ -37,14 +37,32 @@ const runGit = (cwd: string, args: string[]) =>
     stdio: ['ignore', 'pipe', 'pipe'],
   })
 
-export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState => ({
-  origin: runGit(cwd, ['remote', 'get-url', 'origin']).trim(),
-  pushOrigin: runGit(cwd, ['remote', 'get-url', '--push', 'origin']).trim(),
-  branch: runGit(cwd, ['branch', '--show-current']).trim(),
-  status: runGit(cwd, ['status', '--porcelain', '--untracked-files=all', '--ignored']),
-  workspace: realpathSync(runGit(cwd, ['rev-parse', '--show-toplevel']).trim()),
-  cwd: realpathSync(resolve(cwd)),
-})
+const readGitConfig = (cwd: string, key: string) => {
+  try {
+    return runGit(cwd, ['config', '--get-all', key]).trim()
+  } catch (error) {
+    if (error && typeof error === 'object' && 'status' in error && error.status === 1) return ''
+    throw error
+  }
+}
+
+export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState => {
+  const origin = readGitConfig(cwd, 'remote.origin.url')
+  const configuredPushOrigins = readGitConfig(cwd, 'remote.origin.pushurl')
+  const pushOrigins = (configuredPushOrigins || origin)
+    .split('\n')
+    .map((url) => url.trim())
+    .filter(Boolean)
+
+  return {
+    origin,
+    pushOrigins,
+    branch: runGit(cwd, ['branch', '--show-current']).trim(),
+    status: runGit(cwd, ['status', '--porcelain', '--untracked-files=all', '--ignored']),
+    workspace: realpathSync(runGit(cwd, ['rev-parse', '--show-toplevel']).trim()),
+    cwd: realpathSync(resolve(cwd)),
+  }
+}
 
 export const gitFlowAdmissionViolations = (
   action: GitFlowAction,
@@ -53,7 +71,9 @@ export const gitFlowAdmissionViolations = (
   const violations: string[] = []
 
   if (state.origin !== expectedOrigin) violations.push('origin is not canonical')
-  if (state.pushOrigin !== expectedOrigin) violations.push('origin push URL is not canonical')
+  if (state.pushOrigins.length === 0 || state.pushOrigins.some((url) => url !== expectedOrigin)) {
+    violations.push('origin push URL is not canonical')
+  }
   if (state.workspace !== state.cwd) violations.push('cwd is not the repository root')
   const unownedWip = state.status
     .split('\n')

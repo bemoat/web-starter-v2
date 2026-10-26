@@ -102,6 +102,23 @@ describe('Git Flow delivery admission', () => {
       )
 
       runGit(work, ['config', '--unset-all', 'remote.origin.pushurl'])
+      runGit(work, [
+        'config',
+        '--add',
+        'remote.origin.pushurl',
+        'https://github.com/bemoat/web-starter-v2.git',
+      ])
+      runGit(work, [
+        'config',
+        '--add',
+        'remote.origin.pushurl',
+        join(fixtureRoot, 'second-wrong-push-origin.git'),
+      ])
+      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+        'origin push URL is not canonical',
+      )
+
+      runGit(work, ['config', '--unset-all', 'remote.origin.pushurl'])
       writeFileSync(join(work, 'unowned-wip.txt'), 'preserve this WIP\n')
       expect(() => assertGitFlowAdmission('start', work)).toThrow(
         'tracked or unowned WIP is present',
@@ -144,11 +161,15 @@ describe('Git Flow delivery admission', () => {
           'origin',
           'https://github.com/bemoat/web-starter-v2.git',
         ])
+        runGit(work, [
+          'config',
+          `url.${remote}.insteadOf`,
+          'https://github.com/bemoat/web-starter-v2.git',
+        ])
         expect(() => assertGitFlowAdmission('start', work)).not.toThrow()
         runGit(work, ['flow', 'feature', 'start', '4-git-flow-fixture', '--no-fetch'])
         expect(runGit(work, ['branch', '--show-current']).trim()).toBe('feature/4-git-flow-fixture')
         expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
-        runGit(work, ['remote', 'set-url', 'origin', remote])
         runGit(work, ['commit', '--allow-empty', '-m', 'fixture feature'])
         runGit(work, ['flow', 'feature', 'publish', '4-git-flow-fixture'])
 
