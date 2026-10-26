@@ -13,15 +13,17 @@ Before `git flow feature start` or `git flow feature publish`, verify all of the
 
 - `origin` is `https://github.com/bemoat/web-starter-v2.git`.
 - The checkout is the known workspace and has no competing writer.
-- Tracked, untracked, ignored, and generated WIP is identified and preserved.
+- Tracked, ignored, and generated WIP is identified and preserved. The known untracked `AGENTS.md` and `CLAUDE.md` files are preserved; other untracked WIP stops admission.
 - A feature starts from protected `dev` and publishes only a `feature/*` branch.
 - The current ref matches the command. Stop on a wrong ref, wrong origin, dirty unowned WIP, or an unexpected branch.
 
-Use the pinned `git-flow-next` CLI. Configure a local repository only after `dev` is protected:
+Run the local admission guard before invoking the pinned `git-flow-next` CLI. Configure a local repository only after `dev` is protected:
 
 ```bash
+pnpm exec tsx .agents/skills/git-delivery/scripts/admission.ts start
 git flow init --local --main=main --develop=dev --no-create-branches -d
 git flow feature start <name> --no-fetch
+pnpm exec tsx .agents/skills/git-delivery/scripts/admission.ts publish
 git flow feature publish <name>
 ```
 

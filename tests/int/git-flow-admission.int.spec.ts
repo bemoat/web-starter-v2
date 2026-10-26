@@ -5,6 +5,8 @@ import { join, resolve } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
+import { assertGitFlowAdmission } from '../../.agents/skills/git-delivery/scripts/admission'
+
 const skillPath = resolve('.agents/skills/git-delivery/SKILL.md')
 const workflowPath = resolve('.github/workflows/ci.yml')
 
@@ -32,7 +34,7 @@ const configureIdentity = (cwd: string) => {
   runGit(cwd, ['config', 'user.email', 'git-flow-fixture@example.invalid'])
 }
 
-const createFixture = () => {
+const createFixture = (initializeGitFlow: boolean) => {
   const fixtureRoot = mkdtempSync(join(tmpdir(), 'web-starter-v2-git-flow-'))
   const remote = join(fixtureRoot, 'remote.git')
   const seed = join(fixtureRoot, 'seed')
@@ -50,15 +52,17 @@ const createFixture = () => {
   runGit(fixtureRoot, ['clone', remote, work])
   configureIdentity(work)
   runGit(work, ['switch', 'dev'])
-  runGit(work, [
-    'flow',
-    'init',
-    '--local',
-    '--main=main',
-    '--develop=dev',
-    '--no-create-branches',
-    '-d',
-  ])
+  if (initializeGitFlow) {
+    runGit(work, [
+      'flow',
+      'init',
+      '--local',
+      '--main=main',
+      '--develop=dev',
+      '--no-create-branches',
+      '-d',
+    ])
+  }
 
   return { fixtureRoot, remote, work }
 }
@@ -84,9 +88,31 @@ describe('Git Flow delivery admission', () => {
     expect(skill).toContain('required `check`')
   })
 
+  it('rejects unsafe admission before invoking native Git Flow', () => {
+    const { fixtureRoot, remote, work } = createFixture(false)
+
+    try {
+      runGit(work, ['remote', 'set-url', 'origin', join(fixtureRoot, 'wrong-origin.git')])
+      expect(() => assertGitFlowAdmission('start', work)).toThrow('origin is not canonical')
+
+      runGit(work, ['remote', 'set-url', 'origin', remote])
+      writeFileSync(join(work, 'unowned-wip.txt'), 'preserve this WIP\n')
+      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+
+      rmSync(join(work, 'unowned-wip.txt'))
+      runGit(work, ['switch', '-c', 'feature/4-git-flow-fixture'])
+      expect(() => assertGitFlowAdmission('start', work)).toThrow('feature start requires dev')
+      expect(runGit(work, ['branch', '--list', 'feature/4-wrong-ref']).trim()).toBe('')
+    } finally {
+      rmSync(fixtureRoot, { recursive: true, force: true })
+    }
+  })
+
   describe.skipIf(!hasPinnedNativeGitFlow)('with git-flow-next 2.1.0', () => {
     it('starts and publishes a feature from dev in a disposable repository', () => {
-      const { fixtureRoot, remote, work } = createFixture()
+      const { fixtureRoot, remote, work } = createFixture(true)
 
       try {
         runGit(work, ['flow', 'feature', 'start', '4-git-flow-fixture', '--no-fetch'])
@@ -97,32 +123,6 @@ describe('Git Flow delivery admission', () => {
         expect(
           runGit(work, ['ls-remote', '--heads', remote, 'refs/heads/feature/4-git-flow-fixture']),
         ).toContain('refs/heads/feature/4-git-flow-fixture')
-      } finally {
-        rmSync(fixtureRoot, { recursive: true, force: true })
-      }
-    })
-
-    it('stops before native start when origin, WIP, or ref admission is unsafe', () => {
-      const { fixtureRoot, remote, work } = createFixture()
-
-      try {
-        const expectedOrigin = 'https://github.com/bemoat/web-starter-v2.git'
-        runGit(work, ['remote', 'set-url', 'origin', join(fixtureRoot, 'wrong-origin.git')])
-        const actualOrigin = runGit(work, ['remote', 'get-url', 'origin']).trim()
-        expect(actualOrigin).not.toBe(expectedOrigin)
-        expect(runGit(work, ['branch', '--list', 'feature/4-wrong-origin']).trim()).toBe('')
-
-        runGit(work, ['remote', 'set-url', 'origin', remote])
-        writeFileSync(join(work, 'unowned-wip.txt'), 'preserve this WIP\n')
-        expect(runGit(work, ['status', '--porcelain'])).toContain('?? unowned-wip.txt')
-        expect(runGit(work, ['branch', '--show-current']).trim()).toBe('dev')
-
-        rmSync(join(work, 'unowned-wip.txt'))
-        runGit(work, ['flow', 'feature', 'start', '4-git-flow-fixture', '--no-fetch'])
-        const currentRef = runGit(work, ['branch', '--show-current']).trim()
-        expect(currentRef).toBe('feature/4-git-flow-fixture')
-        expect(currentRef).not.toBe('dev')
-        expect(runGit(work, ['branch', '--list', 'feature/4-wrong-ref']).trim()).toBe('')
       } finally {
         rmSync(fixtureRoot, { recursive: true, force: true })
       }
