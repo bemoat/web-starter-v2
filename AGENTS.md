@@ -17,6 +17,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - For Codex tool mapping, read `plugins/pstack/skills/poteto-mode/references/codex-tools.md` from that pinned source; do not add an adapter runtime, install/update PStack, or enable hooks.
 - Codex uses the repository-local native `pstack@pstack-claude` plugin from `.agents/plugins/marketplace.json`, enabled by `.codex/config.toml`. Its vendored skills and notices must remain traceable to the pinned source. Do not depend on a user-global PStack installation.
 - The repository-local plugin is hook-free. Do not add `plugins/pstack/hooks/**`, register a PStack `SessionStart` hook, or rely on default hook discovery.
+- The pinned upstream Codex mapping and `setup-pstack` documentation also describe hook-capable or global-runtime variants; those variants are non-operative here. Do not follow them to enable hooks or write user-global PStack state. Use only the project-local native plugin and this root `AGENTS.md`.
 
 ## Global MC and Adviser continuity
 
