@@ -2,6 +2,8 @@
 
 This distribution contains MIT-licensed work from three upstream sources. The copyright notices and license terms travel beside this file.
 
+This repository-local Codex package intentionally excludes Claude marketplace metadata, hook files, and upstream-only agent definitions. No PStack `SessionStart` hook is active.
+
 ## Upstream sources
 
 | Included work | Upstream | Copyright | License |
@@ -10,4 +12,4 @@ This distribution contains MIT-licensed work from three upstream sources. The co
 | `deslop`, `make-pr-easy-to-review`, `fix-ci`, `fix-merge-conflicts`, `get-pr-comments`, and `what-did-i-get-done` | [cursor/plugins/cursor-team-kit](https://github.com/cursor/plugins/tree/e46364b8be46000b7df0f260550cd712afbb8d36/cursor-team-kit) | (c) 2026 Cursor | [MIT](LICENSE-cursor-team-kit) |
 | `thermos`, `thermo-nuclear-review`, and `thermo-nuclear-code-quality-review` (upstream subagent definitions are provenance-only and omitted locally) | [cursor/plugins/thermos](https://github.com/cursor/plugins/tree/118e73b0e196e4d49d5aade7ce6dd8985a621f68/thermos) | (c) 2026 Cursor | [MIT](LICENSE-thermos) |
 
-The pstack-claude port changes runtime names, tool calls, model defaults, and supporting prose. The port's modifications and additions are (c) 2026 Michael Denyer under the same [MIT license](LICENSE). The [repository notice](https://github.com/michael-denyer/pstack-claude/blob/main/NOTICE.md) records full provenance. The [change log](https://github.com/michael-denyer/pstack-claude/blob/main/CHANGES.md) records each release, and [`tools/forks.json`](https://github.com/michael-denyer/pstack-claude/blob/main/tools/forks.json) names each file the port forks and why.
+The pstack-claude port changes runtime names, tool calls, model defaults, and supporting prose. The port's modifications and additions are (c) 2026 Michael Denyer under the same [MIT license](LICENSE). The [repository notice](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/NOTICE.md) records full provenance. The [change log](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/CHANGES.md) records each release, and [`tools/forks.json`](https://github.com/michael-denyer/pstack-claude/blob/356c6e0f978df729eb16f227d795f34d221c5aad/tools/forks.json) names each file the port forks and why.
