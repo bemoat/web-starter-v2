@@ -42,5 +42,7 @@ jobs:
       - name: Check safety, lint, types and isolated integration tests
         run: pnpm run check
 
-      - name: Build with local bindings
-        run: pnpm run build
+      - name: Build native OpenNext Worker with local bindings
+        run: |
+          pnpm exec opennextjs-cloudflare build --env=dev
+          test -s .open-next/worker.js
