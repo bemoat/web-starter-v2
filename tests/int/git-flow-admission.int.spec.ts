@@ -196,8 +196,8 @@ describe('Git Flow delivery admission', () => {
         expect(() => assertGitFlowAdmission('start', work)).not.toThrow()
         runGit(work, ['flow', 'feature', 'start', '4-git-flow-fixture', '--no-fetch'])
         expect(runGit(work, ['branch', '--show-current']).trim()).toBe('feature/4-git-flow-fixture')
-        expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
         runGit(work, ['commit', '--allow-empty', '-m', 'fixture feature'])
+        expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
         runGit(work, ['flow', 'feature', 'publish', '4-git-flow-fixture'])
 
         expect(
