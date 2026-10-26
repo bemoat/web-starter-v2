@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -43,6 +43,8 @@ const createFixture = (initializeGitFlow: boolean) => {
   runGit(fixtureRoot, ['init', '--bare', remote])
   runGit(fixtureRoot, ['init', '--initial-branch=main', seed])
   configureIdentity(seed)
+  writeFileSync(join(seed, 'tracked.txt'), 'fixture tracked content\n')
+  runGit(seed, ['add', 'tracked.txt'])
   runGit(seed, ['commit', '--allow-empty', '-m', 'fixture main'])
   runGit(seed, ['remote', 'add', 'origin', remote])
   runGit(seed, ['push', 'origin', 'main'])
@@ -119,6 +121,23 @@ describe('Git Flow delivery admission', () => {
       )
 
       runGit(work, ['config', '--unset-all', 'remote.origin.pushurl'])
+      writeFileSync(join(work, '.git', 'info', 'exclude'), '.next/\n.open-next/\n.wrangler/\n', {
+        flag: 'a',
+      })
+      mkdirSync(join(work, '.next'))
+      mkdirSync(join(work, '.open-next'))
+      mkdirSync(join(work, '.wrangler'))
+      writeFileSync(join(work, '.next', 'generated.txt'), 'preserved generated WIP\n')
+      writeFileSync(join(work, '.open-next', 'generated.txt'), 'preserved generated WIP\n')
+      writeFileSync(join(work, '.wrangler', 'generated.txt'), 'preserved generated WIP\n')
+      expect(() => assertGitFlowAdmission('start', work)).not.toThrow()
+
+      writeFileSync(join(work, 'tracked.txt'), 'modified tracked content\n')
+      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+      writeFileSync(join(work, 'tracked.txt'), 'fixture tracked content\n')
+
       writeFileSync(join(work, 'unowned-wip.txt'), 'preserve this WIP\n')
       expect(() => assertGitFlowAdmission('start', work)).toThrow(
         'tracked or unowned WIP is present',
@@ -142,6 +161,14 @@ describe('Git Flow delivery admission', () => {
 
       mkdirSync(join(work, 'nested'))
       expect(() => assertGitFlowAdmission('start', join(work, 'nested'))).toThrow(
+        'cwd is not the repository root',
+      )
+      symlinkSync(work, join(fixtureRoot, 'repository-link'), 'dir')
+      expect(() =>
+        assertGitFlowAdmission('start', join(fixtureRoot, 'repository-link')),
+      ).not.toThrow()
+      symlinkSync(join(work, 'nested'), join(fixtureRoot, 'nested-link'), 'dir')
+      expect(() => assertGitFlowAdmission('start', join(fixtureRoot, 'nested-link'))).toThrow(
         'cwd is not the repository root',
       )
       expect(runGit(work, ['branch', '--list', 'feature/4-wrong-ref']).trim()).toBe('')
