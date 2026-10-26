@@ -16,6 +16,15 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - PStack Host dependency: resolve the pinned external source `michael-denyer/pstack-claude@356c6e0f978df729eb16f227d795f34d221c5aad` before relying on PStack behavior; stop if the installed Skill is absent or resolves elsewhere.
 - For Codex tool mapping, read `plugins/pstack/skills/poteto-mode/references/codex-tools.md` from that pinned source; do not add an adapter runtime, install/update PStack, or enable hooks.
 
+## Global MC and Adviser continuity
+
+- ChatGPT Global MC or Adviser reentry starts from the minimal project bootstrap (`bemoat/web-starter-v2`, Global MC Epic #2, and the GitHub Connector), then explicitly fetches the tracked root `AGENTS.md` through GitHub at the relevant live branch or PR ref and verifies that version. It does not assume that ChatGPT autoloads `AGENTS.md`; a missing or mismatched version is a STOP.
+- After that versioned fetch, recover live authority in this order: Global MC #2, the active Issue or child and its latest approved work-order, the current PR and head/base refs, the effective authorization and accountable owner, and exactly one actionable ONE NEXT. Keep mutable batch state, evidence, and handoffs in GitHub rather than in this file; never hardcode current batch, status, token, ref, or handoff state here.
+- Codex Execution uses native `AGENTS.md` startup discovery, then performs the same live GitHub recovery. An Issue comment is a durable work order, not a command that launches Codex.
+- Keep one active Batch, one actionable ONE NEXT, and one accountable owner. Reusing an effective scoped authorization across a fresh session does not create authority or transfer the exclusive writer role.
+- Preserve one authorized Codex writer, one physical checkout, and all tracked, ignored, generated, and untracked WIP at session boundaries. Send short destination-specific handoffs with the objective and canonical Issue or PR URL. Read back GitHub after each durable Issue, PR, ref, CI, or review transition.
+- Fail closed on missing authority, writer ownership, WIP or ref integrity, reviewer independence, or GitHub access. Do not add a loader, router, registry, controller, duplicate workflow, or historical handoff surface.
+
 ## Progressive disclosure
 
 - Git, ref, or PR start/publish/reentry: read `.agents/skills/git-delivery/SKILL.md`.
