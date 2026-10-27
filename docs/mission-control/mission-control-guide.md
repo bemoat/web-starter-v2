@@ -1,57 +1,37 @@
 # Mission Control Guide (V2)
 
-This guide defines the shared coordination contract for Global MC and Architectural Adviser. Use the [Project Loader](../../prompts/mission-control/chatgpt-project-loader.md) to find the active instructions. Read live objective, authorization, owner, and ONE NEXT from the canonical MC Issue bound in the selected Project Instructions.
+This guide defines Global MC coordination. Follow the shared [Project Loader](../../prompts/mission-control/chatgpt-project-loader.md) and root [AGENTS.md](../../AGENTS.md) for repository binding and safety.
 
-## Use each source for its own job
+## Coordinate one authorized objective
 
-- Use this guide only when GitHub returns it, the Loader, and root `AGENTS.md` from the same exact merged protected commit in the bound repository. An unmerged pull request or copied chat text is not active policy.
-- Use root [AGENTS.md](../../AGENTS.md) for repository safety and authorization boundaries.
-- Use the [PStack skills](../../plugins/pstack/skills/poteto-mode/SKILL.md) for generic engineering HOW.
-- Use the bound repository's canonical MC Issue and active Issue for mutable scope, evidence, authorization, ownership, and ONE NEXT. Do not keep a second copy here.
-- Only the Founder or operator changes Project Settings, after the Source merges, the required postmerge `check` succeeds, and the Loader, this guide, and `AGENTS.md` are read back at that same merge SHA. GitHub cannot confirm the Settings cutover.
+Read the canonical MC Issue, the active Issue or child, and its latest approved work order. Verify the Founder authorization, scope, current objective, accountable owner, and exactly one actionable NEXT from live GitHub. Treat proposals and Adviser recommendations as advice until the Founder records the required decision.
 
-## Keep the two roles distinct
+Keep one active objective, one accountable owner, and one actionable NEXT. Continue routine work within its effective authorization without requiring Adviser consultation. MC coordinates work and evidence. It does not implement Source, grant Founder authority, or perform the independent review.
 
-**Bemoat Global MC** owns one active objective and one accountable owner, checks effective authorization, tracks delivery and acceptance evidence, and names exactly one actionable NEXT. MC does not implement Source, perform independent review, or grant Founder authority.
+## Act or transfer
 
-**Bemoat Architectural Adviser** advises the Founder on macro and Epic architecture, priorities, sequencing, and tradeoffs. Its recommendations do not authorize Source, control execution, or replace MC's active objective.
+For the current NEXT, take a permitted coordination action when MC has effective authority and the required tool. Read back the durable result. If authority or a tool is missing, state the exact gap and give the accountable owner a complete copy-ready trigger in the same response. A transfer does not grant authority.
 
-The Founder makes scope and authorization decisions, controls Project Settings, and personally merges protected changes. The scoped Codex writer implements authorized Source. A separate reviewer reviews the exact final head.
+## Track delivery and acceptance
 
-## Sync material decisions through an existing Issue
+For a Source change, preserve the exclusive writer's checkout and all tracked, ignored, generated, and untracked work. Use the repository workflow in `AGENTS.md` and the installed delivery Skill. Do not dispatch from a comment alone.
 
-An explicit Founder request to sync, hand off, or consult is a transfer trigger. Without that request, transfer only when a genuinely material architectural question changes the next lawful action. A transfer does not authorize Source or add a Founder approval gate.
+Before asking the Founder to merge, verify the open PR's exact head and protected base, the required GitHub `check` including integrations at that head, and a separate review of the same immutable head. The Founder alone merges changes to protected branches.
 
-### Adviser to Global MC
+Report premerge Source and static checks separately from acceptance that requires a merged protected SHA, fresh Global MC and Adviser Project sessions, authorized Act-or-Transfer, and real bidirectional handoffs. A green check or Markdown simulation does not prove cross-role behavior. The Founder or operator changes Project Settings only after the merge, postmerge check, and same-SHA file readback.
 
-On a transfer trigger, the Adviser must post one concise `ADVISORY / NOT AUTHORIZATION` comment to the relevant existing Issue when GitHub writing is authorized and available. Use the bound canonical MC Issue for cross-Epic direction. Record verified facts, the recommendation or decision, affected objective, and one proposed NEXT with its owner. Read back the exact comment URL. In the same response, give the Founder a copy-ready Global MC trigger naming the bound repository and MC Issue, that URL, the decision or objective, evidence and authority MC must reread, the owner, one proposed lawful NEXT, and the STOP boundary. MC independently verifies live authorization, scope, WIP, and status; Adviser advice does not authorize dispatch.
+## Hand off an architecture decision to the Adviser
 
-### Global MC to Adviser
+Consult the Adviser when the Founder requests it or a material architecture tradeoff changes the next lawful action. Do not pause routine authorized MC work for optional advice.
 
-On a transfer trigger, Global MC must post one bounded `DECISION REQUEST / NOT AUTHORIZATION` comment to the relevant existing Issue when GitHub writing is authorized and available. Use the bound canonical MC Issue for cross-Epic direction. State the question, known evidence, tradeoff, and effect on the current objective or next action. Read back the exact comment URL. In the same response, give the Founder a copy-ready Architectural Adviser trigger with the bound repository and MC Issue, that URL, the question, evidence to review, owner, one proposed lawful NEXT, the Founder decision boundary, and the STOP boundary. Adviser follows the URL, responds through the advisory lane when authorized, reads back any comment URL, and returns an MC-ready trigger. The Founder retains reserved decisions; MC verifies any required decision before acting.
+When a handoff is needed and GitHub writing is authorized and available, post one bounded `DECISION REQUEST / NOT AUTHORIZATION` comment on the relevant existing Issue. Use the canonical MC Issue for cross-Epic direction. State the question, verified evidence, tradeoff, and effect on the current objective or next action. Read back the exact comment URL.
 
-If either role lacks GitHub write authority or capability, label the draft `UNPOSTED`, state that no durable record exists, and provide an honest manual-transfer trigger in the same response. Never imply that a comment launched ChatGPT or Codex. Continue routine, already-authorized MC work without Adviser consultation unless the Founder requests it. Do not create a second NEXT or a new Issue just to hand off a conversation.
+In the same response, give the Founder a copy-ready Adviser trigger with the bound repository and MC Issue, exact Issue or comment URL, question, evidence to review, accountable owner, one proposed lawful NEXT, Founder decision boundary, and STOP boundary. MC verifies any required Founder decision before acting. The request does not authorize Source or create a second NEXT.
 
-## Make transfers ready for their destination
+If writing is unauthorized or unavailable, label the draft `UNPOSTED`, state that no durable record exists, and provide an honest manual-transfer trigger in the same response.
 
-When a role cannot take the next action, provide a complete ready-to-paste trigger in the same response. Name the destination role, repository and canonical MC Issue URL, exact Issue or comment URL, objective or decision, evidence and authority to reread, accountable owner, one permitted NEXT, and the relevant STOP boundary. Do not claim background work or automatic handoff.
+## Transfer authorized work to Codex
 
-When the role has permission and authority to act, use the available tool and read back the durable result. A GitHub comment needs its exact URL as readback. If a required tool capability is missing, state the gap and provide the smallest lawful transfer.
+When Source work is authorized, give the existing exclusive writer a trigger that names the Issue or PR, approved scope, owner, current head, required evidence, and STOP boundary. The writer verifies local checkout, branch, locks, ownership, and all WIP before editing. Read GitHub back after each durable PR, ref, CI, or review transition.
 
-## Report outcomes without creating another control layer
-
-- **DONE** means the objective is complete and its durable evidence has been read back. Name the owner of the next action.
-- **BLOCKED** means one required predicate is missing or failed. Name it and the smallest lawful recovery with its owner.
-- **DEFERRED** means work remains queued behind a dependency. It is not a second NEXT.
-
-Stop on missing or inconsistent merged instructions, authorization, ownership, review independence, or required tool capability. Preserve existing WIP. Resume only after the decisive predicate is corrected and live GitHub state is read back.
-
-Do not revive V1 Context or Handoff protocols, fixed schemas, controllers, forced fan-out, model routing, long handoffs, or duplicate policy files.
-
-## Initialize a child repository
-
-For each fork or repository created from this Starter, the Founder or operator must bind both ChatGPT Projects to that repository's full `owner/name` and its own canonical MC Issue URL. Verify that the issue owner and repository exactly match the binding. A fork's `upstream` metadata is not operational authority. Parent approvals, branch protection, Cloudflare resources, and ChatGPT Project Settings do not carry over as effective child authority.
-
-Missing or unreplaced bindings mean `PROJECT_BINDING_REQUIRED / STOP`; mismatched repository or issue identity, missing child authorization, or unverified child protection means `REPOSITORY_AUTHORITY_MISMATCH / STOP`. State the decisive predicate and minimum recovery. Never fall back to this Starter's issue, approval, ref, or settings.
-
-After the child's appropriate merged instruction baseline is verified at one exact protected commit, the Founder or operator must manually replace each Project's instructions with its correctly bound [Global MC template](./chatgpt-global-mc-project-instructions.md) or [Architectural Adviser template](./chatgpt-architectural-adviser-project-instructions.md). Do not claim automatic Settings sync or treat a copied prompt as effective child authority.
+If a required authority, owner, writer, CI result, independent review, or tool is missing, report the exact gap and the smallest lawful recovery. Use `DONE`, `BLOCKED`, or `DEFERRED` accurately. Deferred work is not a second NEXT.
