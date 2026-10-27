@@ -2,11 +2,10 @@
 name: typescript-best-practices
 description: TypeScript best practices. Use when reading or editing any .ts or .tsx file.
 paths: ["**/*.ts", "**/*.tsx"]
+disable-model-invocation: true
 ---
 
 # TypeScript best practices
-
-On Muse, read the [platform mapping](../poteto-mode/references/muse-tools.md), including its per-skill notes, before following this skill.
 
 Apply the **type-system-discipline** principle skill first.
 
