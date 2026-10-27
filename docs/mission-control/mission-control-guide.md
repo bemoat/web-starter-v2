@@ -20,11 +20,17 @@ The Founder makes scope and authorization decisions, controls Project Settings, 
 
 ## Sync material decisions through an existing Issue
 
-When an Adviser recommendation materially changes architecture, scope, or cross-Issue sequencing, the Adviser may post one concise `ADVISORY / NOT AUTHORIZATION` comment on the relevant existing Issue when current authority and GitHub write access allow it. Use the bound canonical MC Issue for cross-Epic decisions. Include verified facts, the design recommendation, affected objective or objectives, and one NEXT with its owner. Read back the exact comment URL. In the same reply, give the Founder a ready-to-paste MC trigger that includes that URL. If posting is not authorized or write access is unavailable, provide a draft and say it was not posted.
+An explicit Founder request to sync, hand off, or consult is a transfer trigger. Without that request, transfer only when a genuinely material architectural question changes the next lawful action. A transfer does not authorize Source or add a Founder approval gate.
 
-When an architectural decision changes MC's next lawful action, MC may post one `DECISION REQUEST / NOT AUTHORIZATION` comment on the relevant existing Issue when current authority and GitHub write access allow it. Include the decision needed and relevant evidence. Read back the exact URL. In the same reply, give the Founder a ready-to-paste Adviser trigger. The Founder retains the decision. MC checks for the actual decision before relying on it.
+### Adviser to Global MC
 
-Continue routine, already-authorized work without Adviser consultation or repeated Founder microapprovals. Do not create a second NEXT, a new Issue for an assessment, or a claim that a comment launched a session.
+On a transfer trigger, the Adviser must post one concise `ADVISORY / NOT AUTHORIZATION` comment to the relevant existing Issue when GitHub writing is authorized and available. Use the bound canonical MC Issue for cross-Epic direction. Record verified facts, the recommendation or decision, affected objective, and one proposed NEXT with its owner. Read back the exact comment URL. In the same response, give the Founder a copy-ready Global MC trigger naming the bound repository and MC Issue, that URL, the decision or objective, evidence and authority MC must reread, the owner, one proposed lawful NEXT, and the STOP boundary. MC independently verifies live authorization, scope, WIP, and status; Adviser advice does not authorize dispatch.
+
+### Global MC to Adviser
+
+On a transfer trigger, Global MC must post one bounded `DECISION REQUEST / NOT AUTHORIZATION` comment to the relevant existing Issue when GitHub writing is authorized and available. Use the bound canonical MC Issue for cross-Epic direction. State the question, known evidence, tradeoff, and effect on the current objective or next action. Read back the exact comment URL. In the same response, give the Founder a copy-ready Architectural Adviser trigger with the bound repository and MC Issue, that URL, the question, evidence to review, owner, one proposed lawful NEXT, the Founder decision boundary, and the STOP boundary. Adviser follows the URL, responds through the advisory lane when authorized, reads back any comment URL, and returns an MC-ready trigger. The Founder retains reserved decisions; MC verifies any required decision before acting.
+
+If either role lacks GitHub write authority or capability, label the draft `UNPOSTED`, state that no durable record exists, and provide an honest manual-transfer trigger in the same response. Never imply that a comment launched ChatGPT or Codex. Continue routine, already-authorized MC work without Adviser consultation unless the Founder requests it. Do not create a second NEXT or a new Issue just to hand off a conversation.
 
 ## Make transfers ready for their destination
 
