@@ -1,3 +1,8 @@
+---
+name: cloudflare-safety
+description: Use for local, read-only Cloudflare, D1/R2, bindings and deployment safety boundaries in web-starter-v2.
+---
+
 # Cloudflare Safety
 
 This project-specific Skill documents the existing Cloudflare safety boundary for `bemoat/web-starter-v2`. It does not replace the repository's engineering workflow or CI.
