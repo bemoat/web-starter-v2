@@ -1,2 +1,2 @@
-[plugins."pstack@pstack-claude"]
+[plugins."pstack@pstack-official"]
 enabled = true
