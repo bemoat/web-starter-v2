@@ -1,13 +1,13 @@
 # Mission Control Guide (V2)
 
-This guide defines the shared coordination contract for Bemoat Global MC and Bemoat Architectural Adviser. Use the [Project Loader](../../prompts/mission-control/chatgpt-project-loader.md) to find the active instructions. Read live objective, authorization, owner, and ONE NEXT from [Global MC #2](https://github.com/bemoat/web-starter-v2/issues/2).
+This guide defines the shared coordination contract for Global MC and Architectural Adviser. Use the [Project Loader](../../prompts/mission-control/chatgpt-project-loader.md) to find the active instructions. Read live objective, authorization, owner, and ONE NEXT from the canonical MC Issue bound in the selected Project Instructions.
 
 ## Use each source for its own job
 
-- Use this guide only when GitHub returns it, the Loader, and root `AGENTS.md` from the same exact merged protected commit. An unmerged pull request or copied chat text is not active policy.
+- Use this guide only when GitHub returns it, the Loader, and root `AGENTS.md` from the same exact merged protected commit in the bound repository. An unmerged pull request or copied chat text is not active policy.
 - Use root [AGENTS.md](../../AGENTS.md) for repository safety and authorization boundaries.
 - Use the [PStack skills](../../plugins/pstack/skills/poteto-mode/SKILL.md) for generic engineering HOW.
-- Use GitHub #2 and the active Issue for mutable scope, evidence, authorization, ownership, and ONE NEXT. Do not keep a second copy here.
+- Use the bound repository's canonical MC Issue and active Issue for mutable scope, evidence, authorization, ownership, and ONE NEXT. Do not keep a second copy here.
 - Only the Founder or operator changes Project Settings, after the Source merges, the required postmerge `check` succeeds, and the Loader, this guide, and `AGENTS.md` are read back at that same merge SHA. GitHub cannot confirm the Settings cutover.
 
 ## Keep the two roles distinct
@@ -20,7 +20,7 @@ The Founder makes scope and authorization decisions, controls Project Settings, 
 
 ## Sync material decisions through an existing Issue
 
-When an Adviser recommendation materially changes architecture, scope, or cross-Issue sequencing, the Adviser may post one concise `ADVISORY / NOT AUTHORIZATION` comment on the relevant existing Issue when current authority and GitHub write access allow it. Use #2 for cross-Epic decisions. Include verified facts, the design recommendation, affected objective or objectives, and one NEXT with its owner. Read back the exact comment URL. In the same reply, give the Founder a ready-to-paste MC trigger that includes that URL. If posting is not authorized or write access is unavailable, provide a draft and say it was not posted.
+When an Adviser recommendation materially changes architecture, scope, or cross-Issue sequencing, the Adviser may post one concise `ADVISORY / NOT AUTHORIZATION` comment on the relevant existing Issue when current authority and GitHub write access allow it. Use the bound canonical MC Issue for cross-Epic decisions. Include verified facts, the design recommendation, affected objective or objectives, and one NEXT with its owner. Read back the exact comment URL. In the same reply, give the Founder a ready-to-paste MC trigger that includes that URL. If posting is not authorized or write access is unavailable, provide a draft and say it was not posted.
 
 When an architectural decision changes MC's next lawful action, MC may post one `DECISION REQUEST / NOT AUTHORIZATION` comment on the relevant existing Issue when current authority and GitHub write access allow it. Include the decision needed and relevant evidence. Read back the exact URL. In the same reply, give the Founder a ready-to-paste Adviser trigger. The Founder retains the decision. MC checks for the actual decision before relying on it.
 
@@ -28,7 +28,7 @@ Continue routine, already-authorized work without Adviser consultation or repeat
 
 ## Make transfers ready for their destination
 
-When a role cannot take the next action, provide a complete ready-to-paste trigger in the same response. Name the destination role, repository and #2, exact Issue or comment URL, objective or decision, evidence and authority to reread, accountable owner, one permitted NEXT, and the relevant STOP boundary. Do not claim background work or automatic handoff.
+When a role cannot take the next action, provide a complete ready-to-paste trigger in the same response. Name the destination role, repository and canonical MC Issue URL, exact Issue or comment URL, objective or decision, evidence and authority to reread, accountable owner, one permitted NEXT, and the relevant STOP boundary. Do not claim background work or automatic handoff.
 
 When the role has permission and authority to act, use the available tool and read back the durable result. A GitHub comment needs its exact URL as readback. If a required tool capability is missing, state the gap and provide the smallest lawful transfer.
 
@@ -41,3 +41,11 @@ When the role has permission and authority to act, use the available tool and re
 Stop on missing or inconsistent merged instructions, authorization, ownership, review independence, or required tool capability. Preserve existing WIP. Resume only after the decisive predicate is corrected and live GitHub state is read back.
 
 Do not revive V1 Context or Handoff protocols, fixed schemas, controllers, forced fan-out, model routing, long handoffs, or duplicate policy files.
+
+## Initialize a child repository
+
+For each fork or repository created from this Starter, the Founder or operator must bind both ChatGPT Projects to that repository's full `owner/name` and its own canonical MC Issue URL. Verify that the issue owner and repository exactly match the binding. A fork's `upstream` metadata is not operational authority. Parent approvals, branch protection, Cloudflare resources, and ChatGPT Project Settings do not carry over as effective child authority.
+
+Missing or unreplaced bindings mean `PROJECT_BINDING_REQUIRED / STOP`; mismatched repository or issue identity, missing child authorization, or unverified child protection means `REPOSITORY_AUTHORITY_MISMATCH / STOP`. State the decisive predicate and minimum recovery. Never fall back to this Starter's issue, approval, ref, or settings.
+
+After the child's appropriate merged instruction baseline is verified at one exact protected commit, the Founder or operator must manually replace each Project's instructions with its correctly bound template. Do not claim automatic Settings sync or treat a copied prompt as effective child authority.
