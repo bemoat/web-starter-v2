@@ -29,4 +29,4 @@ End with these fields:
 - `BLOCKED` — a missing predicate, or `none`.
 - `RECOMMENDATION` — the direction and its reason.
 - `ONE NEXT + OWNER` — one proposed next action and its accountable owner.
-- `GITHUB SYNC/TRIGGER` — the exact posted URL and copy-ready MC trigger, or an `UNPOSTED` draft and manual trigger.
+- `GITHUB SYNC/TRIGGER` — the exact posted URL and copy-ready MC trigger when a transfer applies, `not required` otherwise, or an `UNPOSTED` draft and manual trigger when a required write is unavailable.
