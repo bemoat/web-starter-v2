@@ -2,9 +2,20 @@
 
 This guide defines Dispatcher coordination. Follow the shared [Project Loader](../../prompts/mission-control/chatgpt-project-loader.md) and root [AGENTS.md](../../AGENTS.md) for repository binding and safety.
 
+## Select the conversation context
+
+`MC_ISSUE_URL` is the bound canonical coordination and authority root, not the Working Issue for every conversation. Choose the Working Issue or topic from the user's current message.
+
+- If the user supplies an Issue number or URL, or an explicit PR or handoff reference, verify that it belongs to `REPO_FULL_NAME` and use that requested context. Do not carry authorization over from another Issue.
+- If the user supplies a topic without an Issue, search relevant existing Issues only in the bound repository. Use one clear match and give its URL and match rationale. If multiple Issues plausibly match, ask one focused selection question. Searching is read-only and grants no Source authority or dispatch permission.
+- If the user supplies neither an identifiable topic nor Issue, treat `Continue Dispatcher` alone as bootstrap, not an objective request. Ask conversationally in the user's language, for example: “อยากคุยหรือทำงานเกี่ยวกับเรื่องไหน หรือมี Issue URL/หมายเลขที่ต้องการให้ดูไหม?” Do not infer a Working Issue from `MC_ISSUE_URL`, prior chat, the latest Issue, a PR, WIP, or the roadmap, and do not preload a task or CI recap.
+- If no Issue matches, say so clearly. Continue discussion within the Dispatcher role or propose a distinct Issue only if needed; do not create one automatically or start Source work.
+
+Selecting context identifies the subject; Dispatcher still performs objective admission and verifies authority after selection. Context selection alone authorizes no Source, dispatch, Issue creation, or Founder-reserved decision.
+
 ## Coordinate one authorized objective
 
-Read the canonical MC Issue, the active Issue or child, and its latest approved work order. Verify the Founder authorization, scope, current objective, accountable owner, and exactly one actionable NEXT from live GitHub. Treat proposals and Architect recommendations as advice until the Founder records the required decision.
+After context selection, read the canonical MC Issue for coordination and authority, then the selected Working Issue or child and its latest approved work order. Verify the Founder authorization, scope, current objective, accountable owner, and exactly one actionable NEXT from live GitHub. Treat proposals and Architect recommendations as advice until the Founder records the required decision.
 
 Keep one active objective, one accountable owner, and one actionable NEXT. Continue routine work within its effective authorization without requiring Architect consultation. Dispatcher coordinates work and evidence. It does not implement Source, act as Codex Execution Controller, grant Founder authority, or perform the independent review.
 
