@@ -48,4 +48,4 @@ For each fork or repository created from this Starter, the Founder or operator m
 
 Missing or unreplaced bindings mean `PROJECT_BINDING_REQUIRED / STOP`; mismatched repository or issue identity, missing child authorization, or unverified child protection means `REPOSITORY_AUTHORITY_MISMATCH / STOP`. State the decisive predicate and minimum recovery. Never fall back to this Starter's issue, approval, ref, or settings.
 
-After the child's appropriate merged instruction baseline is verified at one exact protected commit, the Founder or operator must manually replace each Project's instructions with its correctly bound template. Do not claim automatic Settings sync or treat a copied prompt as effective child authority.
+After the child's appropriate merged instruction baseline is verified at one exact protected commit, the Founder or operator must manually replace each Project's instructions with its correctly bound [Global MC template](./chatgpt-global-mc-project-instructions.md) or [Architectural Adviser template](./chatgpt-architectural-adviser-project-instructions.md). Do not claim automatic Settings sync or treat a copied prompt as effective child authority.
