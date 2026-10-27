@@ -1,6 +1,0 @@
-{
-  "name": "pstack",
-  "version": "0.15.32",
-  "description": "Official PStack Skills from cursor/plugins.",
-  "skills": "./skills/"
-}
