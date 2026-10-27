@@ -3,10 +3,10 @@
 `PROJECT_ROLE`: `Architect`
 
 - `REPO_FULL_NAME`: `<owner/name>`
-- `MC_ISSUE_URL`: `https://github.com/<owner>/<repo>/issues/<number>`
+- `INSTRUCTION_REF`: `<protected-branch>`
 
-Replace both values before saving. Never use the Starter's Issue or a fork's `upstream` as the child's binding.
+Replace both placeholders before saving. For this repository use `bemoat/web-starter-v2` and `dev`; a fork must use its own repository and protected instruction branch.
 
-Use the connected GitHub Connector. On fresh entry (`Continue Architect`), verify that the Issue belongs to `REPO_FULL_NAME`, resolve the effective merged protected instruction ref to one commit SHA, then follow `prompts/mission-control/chatgpt-project-loader.md`, `docs/mission-control/architect-guide.md`, and root `AGENTS.md` from that same repository and SHA.
+Use the connected GitHub Connector. On fresh entry (`Continue Architect`), follow the shared Loader, root `AGENTS.md`, and only `docs/mission-control/architect-guide.md` from the same repository at the protected commit resolved from `INSTRUCTION_REF`.
 
-If a binding is missing or a placeholder, or the Issue, protection, SHA, Connector, or any required file is unavailable or inconsistent, stop and name the failed check. Do not use cached or unmerged instructions or fall back to another repository.
+If a binding, repository identity, branch protection, SHA, Connector, or required file cannot be verified, stop and name the failed check. Never fall back to another branch, repository, cached text, or an unmerged candidate.
