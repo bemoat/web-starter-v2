@@ -10,16 +10,13 @@ import { assertGitFlowAdmission } from '../../.agents/skills/git-delivery/script
 const skillPath = resolve('.agents/skills/git-delivery/SKILL.md')
 const workflowPath = resolve('.github/workflows/ci.yml')
 
-const nativeGitFlowVersion = (() => {
-  try {
-    return execFileSync('git', ['flow', 'version'], {
+const nativeGitFlowPath = process.env.GIT_FLOW_BIN?.trim()
+const nativeGitFlowVersion = nativeGitFlowPath
+  ? execFileSync(nativeGitFlowPath, ['version'], {
       encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
+      stdio: ['ignore', 'pipe', 'pipe'],
     })
-  } catch {
-    return ''
-  }
-})()
+  : ''
 
 const runGit = (cwd: string, args: string[]) =>
   execFileSync('git', args, {
@@ -28,6 +25,16 @@ const runGit = (cwd: string, args: string[]) =>
     env: process.env,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
+
+const runGitFlow = (cwd: string, args: string[]) => {
+  if (!nativeGitFlowPath) throw new Error('GIT_FLOW_BIN must point to the pinned git-flow-next binary')
+  return execFileSync(nativeGitFlowPath, args, {
+    cwd,
+    encoding: 'utf8',
+    env: process.env,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+}
 
 const configureIdentity = (cwd: string) => {
   runGit(cwd, ['config', 'user.name', 'Git Flow fixture'])
@@ -55,21 +62,20 @@ const createFixture = (initializeGitFlow: boolean) => {
   configureIdentity(work)
   runGit(work, ['switch', 'dev'])
   if (initializeGitFlow) {
-    runGit(work, [
-      'flow',
+    runGitFlow(work, [
       'init',
       '--local',
       '--main=main',
       '--develop=dev',
       '--no-create-branches',
-      '-d',
+      '--defaults',
     ])
   }
 
   return { fixtureRoot, remote, work }
 }
 
-const hasPinnedNativeGitFlow = nativeGitFlowVersion.includes('2.1.0 (git-flow-next)')
+const hasPinnedNativeGitFlow = nativeGitFlowVersion.trim() === '2.1.0 (git-flow-next)'
 
 describe('Git Flow delivery admission', () => {
   it('keeps the required check on both protected branch paths', () => {
@@ -86,8 +92,20 @@ describe('Git Flow delivery admission', () => {
     const skill = readFileSync(skillPath, 'utf8')
 
     expect(skill).toContain('wrong ref, wrong origin, dirty unowned WIP')
-    expect(skill).toContain('Do not run `git flow finish`')
+    expect(skill).toContain('Do not run a Git Flow finish command')
     expect(skill).toContain('required `check`')
+    expect(skill).toContain('GIT_FLOW_BIN')
+    expect(skill).toContain('release/*')
+    expect(skill).toContain('hotfix/*')
+    expect(skill).toContain('ordinary non-force push')
+  })
+
+  it('makes native CLI execution or its skip reason visible', () => {
+    if (nativeGitFlowPath) {
+      expect(nativeGitFlowVersion.trim()).toBe('2.1.0 (git-flow-next)')
+    } else {
+      expect(nativeGitFlowVersion).toBe('')
+    }
   })
 
   it('rejects unsafe admission before invoking native Git Flow', () => {
@@ -95,11 +113,11 @@ describe('Git Flow delivery admission', () => {
 
     try {
       runGit(work, ['remote', 'set-url', 'origin', join(fixtureRoot, 'wrong-origin.git')])
-      expect(() => assertGitFlowAdmission('start', work)).toThrow('origin is not canonical')
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow('origin is not canonical')
 
       runGit(work, ['remote', 'set-url', 'origin', 'https://github.com/bemoat/web-starter-v2.git'])
       runGit(work, ['config', 'remote.origin.pushurl', join(fixtureRoot, 'wrong-push-origin.git')])
-      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
         'origin push URL is not canonical',
       )
 
@@ -116,7 +134,7 @@ describe('Git Flow delivery admission', () => {
         'remote.origin.pushurl',
         join(fixtureRoot, 'second-wrong-push-origin.git'),
       ])
-      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
         'origin push URL is not canonical',
       )
 
@@ -130,45 +148,80 @@ describe('Git Flow delivery admission', () => {
       writeFileSync(join(work, '.next', 'generated.txt'), 'preserved generated WIP\n')
       writeFileSync(join(work, '.open-next', 'generated.txt'), 'preserved generated WIP\n')
       writeFileSync(join(work, '.wrangler', 'generated.txt'), 'preserved generated WIP\n')
-      expect(() => assertGitFlowAdmission('start', work)).not.toThrow()
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).not.toThrow()
 
       writeFileSync(join(work, 'tracked.txt'), 'modified tracked content\n')
-      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
         'tracked or unowned WIP is present',
       )
       writeFileSync(join(work, 'tracked.txt'), 'fixture tracked content\n')
 
       writeFileSync(join(work, 'unowned-wip.txt'), 'preserve this WIP\n')
-      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
         'tracked or unowned WIP is present',
       )
 
       rmSync(join(work, 'unowned-wip.txt'))
       writeFileSync(join(work, '.git', 'info', 'exclude'), 'ignored-wip.txt\n', { flag: 'a' })
       writeFileSync(join(work, 'ignored-wip.txt'), 'preserve this ignored WIP\n')
-      expect(() => assertGitFlowAdmission('start', work)).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
         'tracked or unowned WIP is present',
       )
 
       rmSync(join(work, 'ignored-wip.txt'))
       runGit(work, ['switch', '-c', 'feature/4-git-flow-fixture'])
-      expect(() => assertGitFlowAdmission('start', work)).toThrow('feature start requires dev')
-      expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow('feature start requires dev')
+      expect(() => assertGitFlowAdmission('start', 'release', work)).toThrow('release start requires dev')
+      expect(() => assertGitFlowAdmission('start', 'hotfix', work)).toThrow('hotfix start requires main')
+      expect(() => assertGitFlowAdmission('publish', 'feature', work)).not.toThrow()
+      expect(() => assertGitFlowAdmission('publish', 'release', work)).toThrow(
+        'release publish requires a release branch',
+      )
+      runGit(work, ['config', 'branch.feature/4-git-flow-fixture.remote', 'other'])
+      runGit(work, [
+        'config',
+        'branch.feature/4-git-flow-fixture.merge',
+        'refs/heads/feature/4-git-flow-fixture',
+      ])
+      expect(() => assertGitFlowAdmission('publish', 'feature', work)).toThrow(
+        'publish upstream must be origin/feature/4-git-flow-fixture',
+      )
+      runGit(work, ['config', '--unset-all', 'branch.feature/4-git-flow-fixture.remote'])
+      runGit(work, ['config', '--unset-all', 'branch.feature/4-git-flow-fixture.merge'])
+      expect(() => assertGitFlowAdmission('publish', 'feature', work)).not.toThrow()
       runGit(work, ['switch', 'dev'])
-      expect(() => assertGitFlowAdmission('publish', work)).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'release', work)).not.toThrow()
+      expect(() => assertGitFlowAdmission('start', 'hotfix', work)).toThrow('hotfix start requires main')
+      expect(() => assertGitFlowAdmission('publish', 'feature', work)).toThrow(
         'feature publish requires a feature branch',
       )
+      runGit(work, ['switch', 'main'])
+      expect(() => assertGitFlowAdmission('start', 'hotfix', work)).not.toThrow()
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow('feature start requires dev')
+      expect(() => assertGitFlowAdmission('start', 'release', work)).toThrow('release start requires dev')
+      runGit(work, ['switch', 'dev'])
+
+      writeFileSync(join(work, '.git', 'refs', 'heads', 'dev.lock'), '')
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow('Git lock files are present')
+      rmSync(join(work, '.git', 'refs', 'heads', 'dev.lock'))
+
+      const otherWorktree = join(fixtureRoot, 'other-worktree')
+      runGit(work, ['worktree', 'add', '--detach', otherWorktree, 'main'])
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'exactly one canonical worktree is required',
+      )
+      runGit(work, ['worktree', 'remove', otherWorktree])
 
       mkdirSync(join(work, 'nested'))
-      expect(() => assertGitFlowAdmission('start', join(work, 'nested'))).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', join(work, 'nested'))).toThrow(
         'cwd is not the repository root',
       )
       symlinkSync(work, join(fixtureRoot, 'repository-link'), 'dir')
       expect(() =>
-        assertGitFlowAdmission('start', join(fixtureRoot, 'repository-link')),
+        assertGitFlowAdmission('start', 'feature', join(fixtureRoot, 'repository-link')),
       ).not.toThrow()
       symlinkSync(join(work, 'nested'), join(fixtureRoot, 'nested-link'), 'dir')
-      expect(() => assertGitFlowAdmission('start', join(fixtureRoot, 'nested-link'))).toThrow(
+      expect(() => assertGitFlowAdmission('start', 'feature', join(fixtureRoot, 'nested-link'))).toThrow(
         'cwd is not the repository root',
       )
       expect(runGit(work, ['branch', '--list', 'feature/4-wrong-ref']).trim()).toBe('')
@@ -177,35 +230,77 @@ describe('Git Flow delivery admission', () => {
     }
   })
 
-  describe.skipIf(!hasPinnedNativeGitFlow)('with git-flow-next 2.1.0', () => {
-    it('starts and publishes a feature from dev in a disposable repository', () => {
-      const { fixtureRoot, remote, work } = createFixture(true)
+  it('requires a protected base upstream and an exact local remote-tracking ref', () => {
+    const { fixtureRoot, work } = createFixture(false)
 
-      try {
-        runGit(work, [
-          'remote',
-          'set-url',
-          'origin',
-          'https://github.com/bemoat/web-starter-v2.git',
-        ])
-        runGit(work, [
-          'config',
-          `url.${remote}.insteadOf`,
-          'https://github.com/bemoat/web-starter-v2.git',
-        ])
-        expect(() => assertGitFlowAdmission('start', work)).not.toThrow()
-        runGit(work, ['flow', 'feature', 'start', '4-git-flow-fixture', '--no-fetch'])
-        expect(runGit(work, ['branch', '--show-current']).trim()).toBe('feature/4-git-flow-fixture')
-        runGit(work, ['commit', '--allow-empty', '-m', 'fixture feature'])
-        expect(() => assertGitFlowAdmission('publish', work)).not.toThrow()
-        runGit(work, ['flow', 'feature', 'publish', '4-git-flow-fixture'])
+    try {
+      runGit(work, ['remote', 'set-url', 'origin', 'https://github.com/bemoat/web-starter-v2.git'])
+      expect(() => assertGitFlowAdmission('start', 'release', work)).not.toThrow()
 
-        expect(
-          runGit(work, ['ls-remote', '--heads', remote, 'refs/heads/feature/4-git-flow-fixture']),
-        ).toContain('refs/heads/feature/4-git-flow-fixture')
-      } finally {
-        rmSync(fixtureRoot, { recursive: true, force: true })
-      }
-    })
+      runGit(work, ['config', 'branch.dev.remote', 'other'])
+      expect(() => assertGitFlowAdmission('start', 'release', work)).toThrow(
+        'release start requires origin/dev upstream',
+      )
+      runGit(work, ['config', 'branch.dev.remote', 'origin'])
+
+      runGit(work, ['commit', '--allow-empty', '-m', 'fixture local dev ahead'])
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'feature start requires local dev to match origin/dev',
+      )
+    } finally {
+      rmSync(fixtureRoot, { recursive: true, force: true })
+    }
   })
+
+  describe.skipIf(!hasPinnedNativeGitFlow)(
+    hasPinnedNativeGitFlow
+      ? 'with git-flow-next 2.1.0'
+      : 'SKIPPED native CLI fixtures: set GIT_FLOW_BIN to pinned git-flow-next 2.1.0',
+    () => {
+      const startAndPublish = (kind: 'feature' | 'release' | 'hotfix', base: 'dev' | 'main') => {
+        const { fixtureRoot, remote, work } = createFixture(true)
+
+        try {
+          runGit(work, ['remote', 'set-url', 'origin', 'https://github.com/bemoat/web-starter-v2.git'])
+          runGit(work, [
+            'config',
+            `url.${remote}.insteadOf`,
+            'https://github.com/bemoat/web-starter-v2.git',
+          ])
+          if (base === 'main') runGit(work, ['switch', 'main'])
+          const baseSha = runGit(work, ['rev-parse', base]).trim()
+
+          expect(() => assertGitFlowAdmission('start', kind, work)).not.toThrow()
+          runGitFlow(work, [kind, 'start', '4-git-flow-fixture', '--no-fetch', '--no-worktree'])
+          const branch = `${kind}/4-git-flow-fixture`
+          expect(runGit(work, ['branch', '--show-current']).trim()).toBe(branch)
+          expect(runGit(work, ['rev-parse', 'HEAD']).trim()).toBe(baseSha)
+          runGit(work, ['commit', '--allow-empty', '-m', `fixture ${kind}`])
+          expect(() => assertGitFlowAdmission('publish', kind, work)).not.toThrow()
+          runGitFlow(work, [kind, 'publish'])
+
+          expect(runGit(work, ['ls-remote', '--heads', remote, `refs/heads/${branch}`])).toContain(
+            `refs/heads/${branch}`,
+          )
+          expect(runGit(work, ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}']).trim()).toBe(
+            `origin/${branch}`,
+          )
+        } finally {
+          rmSync(fixtureRoot, { recursive: true, force: true })
+        }
+      }
+
+      it('starts and publishes feature from dev in a disposable repository', () => {
+        startAndPublish('feature', 'dev')
+      })
+
+      it('starts and publishes release from dev in a disposable repository', () => {
+        startAndPublish('release', 'dev')
+      })
+
+      it('starts and publishes hotfix from main in a disposable repository', () => {
+        startAndPublish('hotfix', 'main')
+      })
+    },
+  )
 })

@@ -1,17 +1,23 @@
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { realpathSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { readdirSync, realpathSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 
 export type GitFlowAction = 'start' | 'publish'
+export type GitFlowKind = 'feature' | 'release' | 'hotfix'
 
 export type GitFlowAdmissionState = {
   origin: string
   pushOrigins: string[]
   branch: string
+  head: string
+  upstream: { remote: string; ref: string } | null
+  remoteBranchHead: string | null
   status: string
   workspace: string
   cwd: string
+  worktrees: string[]
+  gitLocks: string[]
 }
 
 const expectedOrigin = 'https://github.com/bemoat/web-starter-v2.git'
@@ -46,9 +52,63 @@ const readGitConfig = (cwd: string, key: string) => {
   }
 }
 
+const readRef = (cwd: string, ref: string) => {
+  try {
+    return runGit(cwd, ['rev-parse', '--verify', ref]).trim()
+  } catch (error) {
+    if (error && typeof error === 'object' && 'status' in error && error.status === 128) return null
+    throw error
+  }
+}
+
+const readWorktrees = (cwd: string) =>
+  runGit(cwd, ['worktree', 'list', '--porcelain'])
+    .split('\n')
+    .filter((line) => line.startsWith('worktree '))
+    .map((line) => realpathSync(line.slice('worktree '.length)))
+
+const readGitLocks = (cwd: string) => {
+  const gitDirs = [
+    runGit(cwd, ['rev-parse', '--git-dir']).trim(),
+    runGit(cwd, ['rev-parse', '--git-common-dir']).trim(),
+  ].map((path) => resolve(cwd, path))
+  const visited = new Set<string>()
+  const locks = new Set<string>()
+
+  const scan = (directory: string, recursive: boolean) => {
+    if (visited.has(directory)) return
+    visited.add(directory)
+
+    let entries
+    try {
+      entries = readdirSync(directory, { withFileTypes: true })
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') return
+      throw error
+    }
+
+    for (const entry of entries) {
+      const path = join(directory, entry.name)
+      if (entry.isFile() && entry.name.endsWith('.lock')) locks.add(path)
+      else if (recursive && entry.isDirectory()) scan(path, true)
+    }
+  }
+
+  for (const gitDir of new Set(gitDirs)) {
+    scan(gitDir, false)
+    scan(join(gitDir, 'refs'), true)
+    scan(join(gitDir, 'worktrees'), true)
+  }
+
+  return [...locks]
+}
+
 export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState => {
   const origin = readGitConfig(cwd, 'remote.origin.url')
   const configuredPushOrigins = readGitConfig(cwd, 'remote.origin.pushurl')
+  const branch = runGit(cwd, ['branch', '--show-current']).trim()
+  const upstreamRemote = readGitConfig(cwd, `branch.${branch}.remote`)
+  const upstreamRef = readGitConfig(cwd, `branch.${branch}.merge`)
   const pushOrigins = (configuredPushOrigins || origin)
     .split('\n')
     .map((url) => url.trim())
@@ -57,15 +117,22 @@ export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState =>
   return {
     origin,
     pushOrigins,
-    branch: runGit(cwd, ['branch', '--show-current']).trim(),
+    branch,
+    head: runGit(cwd, ['rev-parse', 'HEAD']).trim(),
+    upstream:
+      upstreamRemote || upstreamRef ? { remote: upstreamRemote, ref: upstreamRef } : null,
+    remoteBranchHead: branch ? readRef(cwd, `refs/remotes/origin/${branch}`) : null,
     status: runGit(cwd, ['status', '--porcelain', '--untracked-files=all', '--ignored']),
     workspace: realpathSync(runGit(cwd, ['rev-parse', '--show-toplevel']).trim()),
     cwd: realpathSync(resolve(cwd)),
+    worktrees: readWorktrees(cwd),
+    gitLocks: readGitLocks(cwd),
   }
 }
 
 export const gitFlowAdmissionViolations = (
   action: GitFlowAction,
+  kind: GitFlowKind,
   state: GitFlowAdmissionState,
 ): string[] => {
   const violations: string[] = []
@@ -87,9 +154,35 @@ export const gitFlowAdmissionViolations = (
       return !preserved
     })
   if (unownedWip.length > 0) violations.push('tracked or unowned WIP is present')
-  if (action === 'start' && state.branch !== 'dev') violations.push('feature start requires dev')
-  if (action === 'publish' && !/^feature\/[^/]+$/.test(state.branch)) {
-    violations.push('feature publish requires a feature branch')
+  if (state.worktrees.length !== 1 || state.worktrees[0] !== state.workspace) {
+    violations.push('exactly one canonical worktree is required')
+  }
+  if (state.gitLocks.length > 0) violations.push('Git lock files are present')
+  if (action === 'start') {
+    const requiredBase = kind === 'hotfix' ? 'main' : 'dev'
+    if (state.branch !== requiredBase) {
+      violations.push(`${kind} start requires ${requiredBase}`)
+    } else {
+      if (
+        state.upstream?.remote !== 'origin' ||
+        state.upstream.ref !== `refs/heads/${requiredBase}`
+      ) {
+        violations.push(`${kind} start requires origin/${requiredBase} upstream`)
+      }
+      if (state.remoteBranchHead === null || state.head !== state.remoteBranchHead) {
+        violations.push(`${kind} start requires local ${requiredBase} to match origin/${requiredBase}`)
+      }
+    }
+  }
+  if (action === 'publish' && !new RegExp(`^${kind}\\/[^/]+$`).test(state.branch)) {
+    violations.push(`${kind} publish requires a ${kind} branch`)
+  }
+  if (
+    action === 'publish' &&
+    state.upstream !== null &&
+    (state.upstream.remote !== 'origin' || state.upstream.ref !== `refs/heads/${state.branch}`)
+  ) {
+    violations.push(`publish upstream must be origin/${state.branch}`)
   }
 
   return violations
@@ -97,10 +190,11 @@ export const gitFlowAdmissionViolations = (
 
 export const assertGitFlowAdmission = (
   action: GitFlowAction,
+  kind: GitFlowKind,
   cwd: string,
 ): GitFlowAdmissionState => {
   const state = readGitFlowAdmissionState(cwd)
-  const violations = gitFlowAdmissionViolations(action, state)
+  const violations = gitFlowAdmissionViolations(action, kind, state)
 
   if (violations.length > 0) throw new Error(violations.join('; '))
   return state
@@ -112,14 +206,18 @@ const isEntrypoint =
 
 if (isEntrypoint) {
   const action = process.argv[2]
+  const kind = process.argv[3]
 
-  if (action !== 'start' && action !== 'publish') {
-    console.error('usage: admission.ts <start|publish>')
+  if (
+    (action !== 'start' && action !== 'publish') ||
+    (kind !== 'feature' && kind !== 'release' && kind !== 'hotfix')
+  ) {
+    console.error('usage: admission.ts <start|publish> <feature|release|hotfix>')
     process.exitCode = 2
   } else {
     try {
-      assertGitFlowAdmission(action, process.cwd())
-      console.log(`Git Flow ${action} admission passed.`)
+      assertGitFlowAdmission(action, kind, process.cwd())
+      console.log(`Git Flow ${kind} ${action} admission passed.`)
     } catch (error) {
       console.error(error instanceof Error ? error.message : String(error))
       process.exitCode = 1
