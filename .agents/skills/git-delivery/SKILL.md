@@ -51,3 +51,19 @@ The Git Flow `publish` command creates the remote topic branch and refuses if it
 Finish work through a reviewed GitHub pull request. Do not run a Git Flow finish command against protected `dev` or `main`. Do not force-push, delete protected refs, rebase shared refs, or bypass the required `check`.
 
 If any admission fact is unknown, stop and report the missing evidence. Continue only after the exact ref, owner, WIP, CI, and review state are read back.
+
+#### Post-Founder-merge checkout release (one physical checkout)
+
+A GitHub PR readback confirming the Founder merge marks `PR_MERGED`; it does **not** imply that the local checkout was released. For a merged `feature/* -> dev` PR, complete the local release as part of the normal after-finish handoff when an authorized operator is available, or at the beginning of the next task's acquisition **before** starting any new feature. Do not delay acknowledgement of the successful PR merge or create another approval checkpoint merely to report the local state.
+
+**Owner:** Founder/local operator performs local checkout mutation by default. An explicitly admitted native Child with sole writer ownership may do it only when its verified work order specifically covers checkout maintenance. **Root Controller may inspect and hand off, never switch or mutate Git.** Do not assume a prior Writer remains available or authorized after its PR merges.
+
+**Before touching Git:** verify the canonical origin/push URL, exact GitHub merged PR and destination, live protected destination ref, one physical checkout, no competing owner/writer, no locks, current branch/HEAD, local and remote refs, and tracked/untracked/**ignored/generated** WIP ownership. If any WIP would be lost/overwritten, is unowned/unknown, or cannot be verified, **STOP and preserve it**; clean tracked status alone is not enough.
+
+For a verified merged `feature/* -> dev`, and only if the same checkout can safely transition: fetch current `origin/dev`, switch the existing checkout to local `dev`, and fast-forward **only** to the verified remote `dev` head (e.g. `git fetch origin dev`, `git switch dev`, `git merge --ff-only origin/dev`, with intervening verification). Re-read branch, HEAD versus live `origin/dev`, WIP and worktree count. Mark `LOCAL_CHECKOUT_RELEASED` only on successful readback. Retain the old local feature branch by default; a deleted remote upstream alone does not require local deletion, pruning or repair.
+
+Never use `git flow finish`, reset, clean, stash/pop, force, branch `-D`, prune, an additional worktree, or deletion of ignored/generated state as housekeeping. Optional local branch deletion is **out of scope**, not a prerequisite; consider it later only on separate explicit request and proof the branch is fully integrated, unneeded and free of unreached work.
+
+For `release/*` or `hotfix/* -> main`, verify the Founder main merge independently; **do not** infer that dev contains those changes. Preserve the separately reviewed `main -> dev` sync PR boundary where applicable. A future feature starts from live protected `dev` only after that task's valid admission. STOP on unmerged/uncertain PR, wrong origin/ref/owner, WIP or lock conflict, divergent `dev` (non-FF), or unverified protection; report the exact blocker without destructive repair.
+
+`READY_FOR_NEXT_TASK` is **not** conferred by checkout release. The next task independently verifies its Issue/authorization, Node pin, repository-local PStack Host provenance, Cloudflare/local-data boundaries and normal admission. Do not add a second readiness ceremony.
