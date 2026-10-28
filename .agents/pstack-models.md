@@ -48,6 +48,8 @@ These model IDs are candidates from the design spec, not evidence of availabilit
 ## Closed fallback rules
 
 1. If the Host advertises and accepts the preferred model and effort, dispatch once and record the evidence labels above. Mark hidden model or effort details `NOT_OBSERVABLE`.
+   Continue with limited routing visibility only when a previously Founder-approved work envelope expressly permits it. In that case, mark exact routing acceptance `PARTIAL`, not `RUNTIME_VERIFIED`. Otherwise stop.
+   If the Host substitutes a model or effort that violates the active work order, report `HOST_SUBSTITUTION_VIOLATES_WORK_ORDER / STOP`.
 2. If effort is unavailable but the model is available, omit the effort only when the task envelope permits the Host's session default. Do not silently select a more expensive model or effort.
 3. If the required Writer model is unavailable, use an inherited Parent model only when that model is explicitly selected, approved for the Writer scope and budget, and the native child identity is confirmed. Otherwise report `REQUIRED_WRITER_MODEL_UNAVAILABLE / STOP`. Root must not write as fallback.
 4. If the preferred Reviewer model is unavailable, use an inherited Parent model only when the model is explicitly selected and observable, the review contract allows it, and the Reviewer remains a separate read-only context. Otherwise report `INDEPENDENT_REVIEW_UNAVAILABLE / STOP`.
@@ -62,6 +64,8 @@ These model IDs are candidates from the design spec, not evidence of availabilit
 | Physical checkouts | 1 |
 | Default advisory fanout | 0 |
 | Optional Solver | 0 or 1, only when the work order permits |
+
+These values are caps, not launches. No model row creates an agent or grants implicit fanout. Invoke only the roles permitted by the active work order.
 
 Codex and Cursor are alternative launch Hosts, never simultaneous Writers on one checkout. Before a Host handoff, verify the previous Writer stopped, the checkout is released, and the current ref and WIP are read back.
 
