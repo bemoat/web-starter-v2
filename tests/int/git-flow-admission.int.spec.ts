@@ -97,6 +97,7 @@ describe('Git Flow delivery admission', () => {
     expect(skill).toContain('GIT_FLOW_BIN')
     expect(skill).toContain('release/*')
     expect(skill).toContain('hotfix/*')
+    expect(skill).toContain('ordinary non-force push')
   })
 
   it('makes native CLI execution or its skip reason visible', () => {

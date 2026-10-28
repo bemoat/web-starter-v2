@@ -44,6 +44,8 @@ NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/
 
 Open a feature PR to `dev` and a release or hotfix PR to `main`. After a Founder-merged release or hotfix, sync only its reviewed changes back to `dev` through a separate PR. Do not assume a hotfix fixture proves release PR acceptance.
 
+The Git Flow `publish` command creates the remote topic branch and refuses if it already exists. For later commits on that published branch, rerun the matching `publish` admission guard and use an ordinary non-force push to the verified `origin` upstream.
+
 ## Finish boundary
 
 Finish work through a reviewed GitHub pull request. Do not run a Git Flow finish command against protected `dev` or `main`. Do not force-push, delete protected refs, rebase shared refs, or bypass the required `check`.
