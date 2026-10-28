@@ -276,7 +276,7 @@ describe('Git Flow delivery admission', () => {
           expect(runGit(work, ['rev-parse', 'HEAD']).trim()).toBe(baseSha)
           runGit(work, ['commit', '--allow-empty', '-m', `fixture ${kind}`])
           expect(() => assertGitFlowAdmission('publish', kind, work)).not.toThrow()
-          runGitFlow(work, [kind, 'publish', '4-git-flow-fixture'])
+          runGitFlow(work, [kind, 'publish'])
 
           expect(runGit(work, ['ls-remote', '--heads', remote, `refs/heads/${branch}`])).toContain(
             `refs/heads/${branch}`,

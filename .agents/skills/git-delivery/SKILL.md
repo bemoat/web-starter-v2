@@ -29,17 +29,17 @@ export GIT_FLOW_BIN=/absolute/path/to/pinned/git-flow
 NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/scripts/admission.ts start feature
 "$GIT_FLOW_BIN" feature start <name> --no-fetch --no-worktree
 NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/scripts/admission.ts publish feature
-"$GIT_FLOW_BIN" feature publish <name>
+"$GIT_FLOW_BIN" feature publish
 
 NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/scripts/admission.ts start release
 "$GIT_FLOW_BIN" release start <name> --no-fetch --no-worktree
 NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/scripts/admission.ts publish release
-"$GIT_FLOW_BIN" release publish <name>
+"$GIT_FLOW_BIN" release publish
 
 NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/scripts/admission.ts start hotfix
 "$GIT_FLOW_BIN" hotfix start <name> --no-fetch --no-worktree
 NODE_OPTIONS=--no-deprecation node --import=tsx/esm .agents/skills/git-delivery/scripts/admission.ts publish hotfix
-"$GIT_FLOW_BIN" hotfix publish <name>
+"$GIT_FLOW_BIN" hotfix publish
 ```
 
 Open a feature PR to `dev` and a release or hotfix PR to `main`. After a Founder-merged release or hotfix, sync only its reviewed changes back to `dev` through a separate PR. Do not assume a hotfix fixture proves release PR acceptance.
