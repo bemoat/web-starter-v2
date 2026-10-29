@@ -8,7 +8,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Codex L0
+# Mandatory Repository Safety & Authorization Rules
 
 - This repository may use Codex or Cursor as an explicitly admitted execution Host. Both obey one exclusive Writer and one physical checkout; preserve all tracked, ignored, generated, and untracked WIP. Only one Host may hold Source writer ownership at a time.
 - Root Chat is CONTROLLER-ONLY: no Source, test, generated-file writes, mutating Git, commits, or PR publication. Start exactly one native Child Writer only after the active Issue and work order admit it. Use a separate read-only Reviewer for the immutable final PR HEAD when required and an optional read-only Solver only when the work order permits. If delegation is unavailable, STOP rather than writing in Root.
