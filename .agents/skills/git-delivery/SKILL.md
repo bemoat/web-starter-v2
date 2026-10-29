@@ -56,7 +56,30 @@ If any admission fact is unknown, stop and report the missing evidence. Continue
 
 A GitHub PR readback confirming the Founder merge marks `PR_MERGED`; it does **not** imply that the local checkout was released. For a merged `feature/* -> dev` PR, complete the local release as part of the normal after-finish handoff when an authorized operator is available, or at the beginning of the next task's acquisition **before** starting any new feature. Do not delay acknowledgement of the successful PR merge or create another approval checkpoint merely to report the local state.
 
-**Owner:** Founder/local operator performs local checkout mutation by default. An explicitly admitted native Child with sole writer ownership may do it only when its verified work order specifically covers checkout maintenance. **Root Controller may inspect and hand off, never switch or mutate Git.** Do not assume a prior Writer remains available or authorized after its PR merges.
+**Owner and preauthorization:** Founder/local operator owns postmerge checkout
+mutation by default. For a new `feature/* -> dev` Source task, include the
+following bounded clause in its original Founder Source-approval work order
+and verify that the Founder explicitly approved it at task admission:
+"For this authorized objective and its resulting feature PR to protected
+`dev`, I additionally preauthorize exactly one safe post-Founder-merge
+local checkout release by one separately admitted exclusive native Child
+in the same physical checkout. This permission becomes usable only after
+the Founder merge and required exact-merge-SHA checks are verified and
+origin/ref/ownership/locks, all tracked/untracked/ignored/generated WIP,
+and a safe switch plus fast-forward-only `dev` transition are freshly
+verified. Root stays read-only; the prior Writer does not silently retain
+ownership. STOP without mutation on missing evidence or unsafe state.
+The grant ends on one recorded PASS or STOP and cannot authorize Source
+changes, protected merge, deployment, additional checkout or cleanup."
+A valid Founder approval containing this clause covers the conditional
+postmerge maintenance; do not request a second Founder approval solely
+to repeat it after the merge. Verify the clause at original task admission,
+not first during postmerge release. Its absence is **not** implicit
+permission: retain Founder/local operator ownership, or obtain specific
+Founder authority; never treat an Issue link, Skill, prior Child or
+successful PR merge as Child mutation authorization. Root may only inspect
+and hand off; a new/reused Child must independently prove exclusive
+maintenance ownership before acting.
 
 **Before touching Git:** verify the canonical origin/push URL, exact GitHub merged PR and destination, live protected destination ref, one physical checkout, no competing owner/writer, no locks, current branch/HEAD, local and remote refs, and tracked/untracked/**ignored/generated** WIP ownership. If any WIP would be lost/overwritten, is unowned/unknown, or cannot be verified, **STOP and preserve it**; clean tracked status alone is not enough.
 
