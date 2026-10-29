@@ -167,7 +167,7 @@ describe('project model sheet contract', () => {
 
   it('rejects malformed Host profiles before they can guide a dispatch', () => {
     const sheet = read('.agents/pstack-models.md')
-    const codexWriter = '| `feature, refactoring` | `gpt-6-luna` | `medium` |'
+    const codexWriter = '| `feature, refactoring` | `gpt-6-luna` | `high` |'
     const cursorWriter = '| `feature, refactoring` | `composer-2.5` | `session` |'
     const malformed = [
       sheet.replace('## Codex preferences', '## Codex preferences\n\n## Codex preferences'),
