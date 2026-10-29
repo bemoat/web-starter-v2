@@ -8,10 +8,12 @@ Apply the active Founder-approved Issue and work order first, then root `AGENTS.
 
 Record each routing step separately:
 
-- `REQUESTED` names the model and effort passed to the native Host.
-- `HOST_ACCEPTED` is recorded only when Host-returned evidence confirms the requested model and effort. A successful dispatch by itself does not prove the model.
-- `RUNTIME_VERIFIED` requires Host telemetry, a task card, or usage evidence that identifies the model and effort that ran.
-- `NOT_OBSERVABLE` means the Host does not expose that evidence. Never infer a runtime model from this sheet, role frontmatter, or the Parent's model.
+- `REQUESTED` is the literal model and effort sent to the native spawn API.
+- `HOST_UI_REPORTED` is the model and effort displayed on the identified Child's task card; record `NOT_OBSERVABLE` when it is unavailable. A task card reports a selection, not which model ran.
+- `HOST_ACCEPTED` requires Host-returned acceptance evidence for the identified Child. Otherwise record `NOT_OBSERVABLE`; a successful spawn or task-card label alone does not prove acceptance.
+- `ROUTING_ASSUMED=PARTIAL` is a bounded admission assumption that permits qualifying work to proceed under fallback rule #1. It is not exact routing acceptance `PARTIAL` and does not prove the served model.
+- `RUNTIME_VERIFIED` requires evidence of the effective served model and effort attributable to that Child. A request or task-card label alone is insufficient.
+- `NOT_OBSERVABLE` means the Host does not expose the required evidence. Never infer accepted routing or a runtime model from this sheet, role frontmatter, a request, a task card, or the Parent's model.
 
 The current Cursor documentation describes project agents in `.cursor/agents/` and the `model` and `readonly` frontmatter fields. That documentation does not prove an account can select a candidate model or that a task used it. [Cursor subagents documentation](https://cursor.com/docs/subagents).
 
@@ -47,9 +49,7 @@ These model IDs are candidates from the design spec, not evidence of availabilit
 
 ## Closed fallback rules
 
-1. If the Host advertises and accepts the preferred model and effort, dispatch once and record the evidence labels above. Mark hidden model or effort details `NOT_OBSERVABLE`.
-   Continue with limited routing visibility only when a previously Founder-approved work envelope expressly permits it. In that case, mark exact routing acceptance `PARTIAL`, not `RUNTIME_VERIFIED`. Otherwise stop.
-   If the Host substitutes a model or effort that violates the active work order, report `HOST_SUBSTITUTION_VIOLATES_WORK_ORDER / STOP`.
+1. For a Founder-authorized ordinary LOW/MEDIUM-risk, non-model-critical task where exact model and effort are preferences, request one Host-advertised supported model and effort. A previously Founder-approved work envelope must authorize the task, but it need not separately opt in to partial routing visibility for this ordinary spawn. If one identifiable native Child spawn succeeds with no explicit rejection, substitution, unsupported effort, capacity issue, or contradictory task-card evidence, proceed with `ROUTING_ASSUMED=PARTIAL` even when `HOST_ACCEPTED=NOT_OBSERVABLE` and `RUNTIME_VERIFIED=NOT_OBSERVABLE`. Record any task-card label as `HOST_UI_REPORTED`; absent card data is not by itself a STOP. Do not require another spawn, probe, or task-specific Founder approval solely because acceptance or runtime metadata is unavailable. For high-risk, model/effort-critical, or hard-cost-control work, require adequate acceptance/control evidence or a separately explicit task-specific Founder risk disposition; otherwise STOP. If the Host substitutes a model or effort that violates the active work order, report `HOST_SUBSTITUTION_VIOLATES_WORK_ORDER / STOP`. STOP on any observed violation of the authorized model, effort, cost, or review requirements.
 2. If effort is unavailable but the model is available, omit the effort only when the task envelope permits the Host's session default. Do not silently select a more expensive model or effort.
 3. If the required Writer model is unavailable, use an inherited Parent model only when that model is explicitly selected, approved for the Writer scope and budget, and the native child identity is confirmed. Otherwise report `REQUIRED_WRITER_MODEL_UNAVAILABLE / STOP`. Root must not write as fallback.
 4. If the preferred Reviewer model is unavailable, use an inherited Parent model only when the model is explicitly selected and observable, the review contract allows it, and the Reviewer remains a separate read-only context. Otherwise report `INDEPENDENT_REVIEW_UNAVAILABLE / STOP`.
