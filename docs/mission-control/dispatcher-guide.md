@@ -46,3 +46,13 @@ If writing is unauthorized or unavailable, label the draft `UNPOSTED`, state tha
 When Source work is authorized, give the existing exclusive writer a trigger that names the Issue or PR, approved scope, owner, current head, required evidence, and STOP boundary. The writer verifies local checkout, branch, locks, ownership, and all WIP before editing. Read GitHub back after each durable PR, ref, CI, or review transition.
 
 If a required authority, owner, writer, CI result, independent review, or tool is missing, report the exact gap and the smallest lawful recovery. Use `DONE`, `BLOCKED`, or `DEFERRED` accurately. Deferred work is not a second NEXT.
+
+### Codex Root session continuity: REUSE / FRESH / HOLD
+
+Treat an objective as a specific Founder-approved outcome and scope on an Issue. An Epic, branch, conversation, or individual test or commit does not define it.
+
+- **REUSE** the current Root only for the same Issue and approved objective, while authority remains valid and the native Host confirms safe checkout and Writer ownership. In-scope implementation, CI or review corrections, and bounded STOP recovery may reuse it.
+- **FRESH** for a different Issue or a separately approved objective on the same Issue. After the prior objective closes, route the next objective to a fresh Codex Root conversation once the prior Writer is released and checkout ownership is safe. Reverify the new task. A fresh conversation grants no checkout or Writer authority and carries no prior Child permissions.
+- **HOLD** before Source or Writer admission when a prior Writer may still own the checkout; Host ownership, release, locks, WIP, or refs are unknown or unsafe; or the Codex UI branch differs from the physical Git branch. Route the exact blocker to the Host/operator and use Git Delivery for checkout state.
+
+Dispatcher recommends a destination Root and prompt. The native Host/operator proves ownership. Dispatcher does not create or end sessions, mutate a checkout, grant Source authority, or perform an independent review. Follow root `AGENTS.md`, Git Delivery, and PStack without copying their procedures here.
