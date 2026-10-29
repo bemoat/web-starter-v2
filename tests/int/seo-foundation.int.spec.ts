@@ -29,8 +29,12 @@ describe('SEO foundation', () => {
     ['credentials', 'https://user:pass@tenant.bemoat.com'],
     ['empty user information', 'https://@tenant.bemoat.com'],
     ['embedded path', 'https://tenant.bemoat.com/site'],
+    ['normalized parent path', 'https://tenant.bemoat.com/path/..'],
+    ['encoded dot path', 'https://tenant.bemoat.com/%2e'],
     ['query', 'https://tenant.bemoat.com?preview=true'],
+    ['empty query delimiter', 'https://tenant.bemoat.com?'],
     ['fragment', 'https://tenant.bemoat.com#preview'],
+    ['empty fragment delimiter', 'https://tenant.bemoat.com#'],
   ])('fails closed for %s origin values', (_label, siteUrl) => {
     const disabled = getSeoConfig({ SEO_INDEXING_ENABLED: 'false', SITE_URL: siteUrl })
     const metadata = createRouteMetadata({ path: '/', publicReady: true }, disabled)

@@ -61,7 +61,15 @@ function isInvalidHost(hostname: string): boolean {
 }
 
 function configuredUrl(value: string | undefined, originOnly = false): URL | undefined {
-  if (!value || value.trim() !== value || /^https:\/\/[^/?#]*@/i.test(value)) return undefined
+  if (
+    !value ||
+    value.trim() !== value ||
+    value.includes('\\') ||
+    (originOnly && !/^https:\/\/[^/?#]+\/?$/i.test(value)) ||
+    /^https:\/\/[^/?#]*@/i.test(value)
+  ) {
+    return undefined
+  }
 
   try {
     const url = new URL(value)
