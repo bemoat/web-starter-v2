@@ -24,8 +24,8 @@ These are preferences for native Codex requests. Request a model or effort only 
 | PStack role | Preferred model | Preferred effort | Use |
 | --- | --- | --- | --- |
 | `controller` | `gpt-6-luna` | `xhigh` | Parent selection only. It grants no Source permission. |
-| `feature, refactoring` | `gpt-6-luna` | `medium` | One native Child Writer for an admitted scope. |
-| `bug-fix` | `gpt-6-luna` | `medium` | The same authorized Writer, not another agent. |
+| `feature, refactoring` | `gpt-6-luna` | `high` | One native Child Writer for an admitted scope. |
+| `bug-fix` | `gpt-6-luna` | `high` | The same authorized Writer, not another agent. |
 | `judgment and prose` | `gpt-6.1-sol` | `medium` | Optional bounded read-only Solver. |
 | `strongest judgment` | `gpt-6.1-sol` | `high` | Optional bounded read-only Solver when the work order allows it. |
 | `reviewer` | `gpt-6.1-sol` | `medium` | One separate read-only final-HEAD Reviewer when required. |

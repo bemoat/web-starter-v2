@@ -29,8 +29,8 @@ const parseAgentFrontmatter = (path: string) => {
 const expectedProfiles = {
   Codex: [
     { role: 'controller', model: 'gpt-6-luna', effort: 'xhigh' },
-    { role: 'feature, refactoring', model: 'gpt-6-luna', effort: 'medium' },
-    { role: 'bug-fix', model: 'gpt-6-luna', effort: 'medium' },
+    { role: 'feature, refactoring', model: 'gpt-6-luna', effort: 'high' },
+    { role: 'bug-fix', model: 'gpt-6-luna', effort: 'high' },
     { role: 'judgment and prose', model: 'gpt-6.1-sol', effort: 'medium' },
     { role: 'strongest judgment', model: 'gpt-6.1-sol', effort: 'high' },
     { role: 'reviewer', model: 'gpt-6.1-sol', effort: 'medium' },
@@ -167,7 +167,7 @@ describe('project model sheet contract', () => {
 
   it('rejects malformed Host profiles before they can guide a dispatch', () => {
     const sheet = read('.agents/pstack-models.md')
-    const codexWriter = '| `feature, refactoring` | `gpt-6-luna` | `medium` |'
+    const codexWriter = '| `feature, refactoring` | `gpt-6-luna` | `high` |'
     const cursorWriter = '| `feature, refactoring` | `composer-2.5` | `session` |'
     const malformed = [
       sheet.replace('## Codex preferences', '## Codex preferences\n\n## Codex preferences'),
