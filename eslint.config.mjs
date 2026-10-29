@@ -32,7 +32,7 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'plugins/pstack/**', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    ignores: ['.next/', '.open-next/', 'plugins/pstack/**', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
   },
 ]
 
