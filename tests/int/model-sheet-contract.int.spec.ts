@@ -29,8 +29,8 @@ const parseAgentFrontmatter = (path: string) => {
 const expectedProfiles = {
   Codex: [
     { role: 'controller', model: 'gpt-6-luna', effort: 'xhigh' },
-    { role: 'feature, refactoring', model: 'gpt-6-luna', effort: 'medium' },
-    { role: 'bug-fix', model: 'gpt-6-luna', effort: 'medium' },
+    { role: 'feature, refactoring', model: 'gpt-6-luna', effort: 'high' },
+    { role: 'bug-fix', model: 'gpt-6-luna', effort: 'high' },
     { role: 'judgment and prose', model: 'gpt-6.1-sol', effort: 'medium' },
     { role: 'strongest judgment', model: 'gpt-6.1-sol', effort: 'high' },
     { role: 'reviewer', model: 'gpt-6.1-sol', effort: 'medium' },
