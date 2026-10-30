@@ -33,6 +33,7 @@ Choose a focused check only after reading the active Work Order and the relevant
 | `pnpm run check` | Runs the Cloudflare guard, lint, typecheck, and all integration tests. Integration tests use local persisted D1 state, so this command is not side-effect free. |
 | `pnpm run test:int -- tests/int/<spec>.int.spec.ts` | Runs one integration spec with the isolated `.wrangler-test/state/v3` persistence path. It can change that test database. |
 | `pnpm run test:e2e -- tests/e2e/<spec>.spec.ts` | Starts `pnpm dev`, which can generate types and push schema changes, then runs one Playwright spec with `.wrangler-test/e2e` persistence. Playwright imports `dotenv/config`, which can read `.env`. The run can change test data and writes reports and results. |
+| `pnpm run test` | Runs all integration and E2E tests. It can change both test databases, start the Payload dev server, generate types, push schema changes, read `.env` through Playwright, and write reports and results. |
 | `pnpm run generate:types` | Rewrites `cloudflare-env.d.ts` and `src/payload-types.ts`. |
 | `pnpm run build` | Runs `next build`, writes build output, and uses `.wrangler-build/state/<pid>` for local bindings. |
 | `pnpm run dev` | Starts Next.js. Payload development can generate types and push schema changes to the bound D1 database. |
