@@ -19,6 +19,7 @@ export type GitFlowAdmissionState = {
   worktrees: string[]
   gitLocks: string[]
   rootEnvSafe?: boolean
+  rootEnvAttested?: boolean
 }
 
 const expectedOrigin = 'https://github.com/bemoat/web-starter-v2.git'
@@ -143,7 +144,7 @@ const hasSafeRootEnvMetadata = (workspace: string, cwd: string): boolean => {
   }
 }
 
-export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState => {
+export const readGitFlowAdmissionState = (cwd: string, rootEnvAttested = false): GitFlowAdmissionState => {
   const origin = readGitConfig(cwd, 'remote.origin.url')
   const configuredPushOrigins = readGitConfig(cwd, 'remote.origin.pushurl')
   const branch = runGit(cwd, ['branch', '--show-current']).trim()
@@ -174,6 +175,7 @@ export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState =>
     workspace,
     cwd: resolvedCwd,
     rootEnvSafe,
+    rootEnvAttested,
     worktrees: readWorktrees(cwd),
     gitLocks: readGitLocks(cwd),
   }
@@ -200,7 +202,7 @@ export const gitFlowAdmissionViolations = (
       const preserved = line.startsWith('?? ')
         ? preservedUntrackedWip.has(path)
         : line.startsWith('!! ') &&
-          (preservedIgnoredWip.has(root) || (line === '!! .env' && state.rootEnvSafe === true))
+          (preservedIgnoredWip.has(root) || (line === '!! .env' && state.rootEnvSafe === true && state.rootEnvAttested === true))
       return !preserved
     })
   if (unownedWip.length > 0) violations.push('tracked or unowned WIP is present')
@@ -242,8 +244,9 @@ export const assertGitFlowAdmission = (
   action: GitFlowAction,
   kind: GitFlowKind,
   cwd: string,
+  rootEnvAttested = false,
 ): GitFlowAdmissionState => {
-  const state = readGitFlowAdmissionState(cwd)
+  const state = readGitFlowAdmissionState(cwd, rootEnvAttested)
   const violations = gitFlowAdmissionViolations(action, kind, state)
 
   if (violations.length > 0) throw new Error(violations.join('; '))
@@ -262,11 +265,16 @@ if (isEntrypoint) {
     (action !== 'start' && action !== 'publish') ||
     (kind !== 'feature' && kind !== 'release' && kind !== 'hotfix')
   ) {
-    console.error('usage: admission.ts <start|publish> <feature|release|hotfix>')
+    console.error('usage: admission.ts <start|publish> <feature|release|hotfix> [--founder-attests-root-env-preservation]')
     process.exitCode = 2
   } else {
     try {
-      assertGitFlowAdmission(action, kind, process.cwd())
+      assertGitFlowAdmission(
+        action,
+        kind,
+        process.cwd(),
+        process.argv.slice(4).includes('--founder-attests-root-env-preservation'),
+      )
       console.log(`Git Flow ${kind} ${action} admission passed.`)
     } catch (error) {
       console.error(error instanceof Error ? error.message : String(error))
