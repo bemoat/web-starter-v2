@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { readdirSync, realpathSync } from 'node:fs'
+import { lstatSync, readdirSync, realpathSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 export type GitFlowAction = 'start' | 'publish'
@@ -18,6 +18,7 @@ export type GitFlowAdmissionState = {
   cwd: string
   worktrees: string[]
   gitLocks: string[]
+  rootEnvSafe?: boolean
 }
 
 const expectedOrigin = 'https://github.com/bemoat/web-starter-v2.git'
@@ -103,6 +104,45 @@ const readGitLocks = (cwd: string) => {
   return [...locks]
 }
 
+const hasSafeRootEnvMetadata = (workspace: string, cwd: string): boolean => {
+  if (workspace !== cwd || typeof process.getuid !== 'function') return false
+
+  try {
+    const envPath = join(workspace, '.env')
+    const ownerUid = BigInt(process.getuid())
+    const first = lstatSync(envPath, { bigint: true })
+
+    if (
+      !first.isFile() ||
+      first.isSymbolicLink() ||
+      first.uid !== ownerUid ||
+      first.nlink !== 1n ||
+      (first.mode & 0o022n) !== 0n
+    ) {
+      return false
+    }
+
+    if (realpathSync(workspace) !== workspace || realpathSync(envPath) !== envPath) {
+      return false
+    }
+
+    const second = lstatSync(envPath, { bigint: true })
+    return (
+      first.dev === second.dev &&
+      first.ino === second.ino &&
+      first.size === second.size &&
+      first.mtimeNs === second.mtimeNs &&
+      first.ctimeNs === second.ctimeNs &&
+      first.uid === second.uid &&
+      first.gid === second.gid &&
+      first.nlink === second.nlink &&
+      first.mode === second.mode
+    )
+  } catch {
+    return false
+  }
+}
+
 export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState => {
   const origin = readGitConfig(cwd, 'remote.origin.url')
   const configuredPushOrigins = readGitConfig(cwd, 'remote.origin.pushurl')
@@ -114,17 +154,26 @@ export const readGitFlowAdmissionState = (cwd: string): GitFlowAdmissionState =>
     .map((url) => url.trim())
     .filter(Boolean)
 
+  const head = runGit(cwd, ['rev-parse', 'HEAD']).trim()
+  const status = runGit(cwd, ['status', '--porcelain', '--untracked-files=all', '--ignored'])
+  const workspace = realpathSync(runGit(cwd, ['rev-parse', '--show-toplevel']).trim())
+  const resolvedCwd = realpathSync(resolve(cwd))
+  const rootEnvSafe = status.split('\n').includes('!! .env')
+    ? hasSafeRootEnvMetadata(workspace, resolvedCwd)
+    : false
+
   return {
     origin,
     pushOrigins,
     branch,
-    head: runGit(cwd, ['rev-parse', 'HEAD']).trim(),
+    head,
     upstream:
       upstreamRemote || upstreamRef ? { remote: upstreamRemote, ref: upstreamRef } : null,
     remoteBranchHead: branch ? readRef(cwd, `refs/remotes/origin/${branch}`) : null,
-    status: runGit(cwd, ['status', '--porcelain', '--untracked-files=all', '--ignored']),
-    workspace: realpathSync(runGit(cwd, ['rev-parse', '--show-toplevel']).trim()),
-    cwd: realpathSync(resolve(cwd)),
+    status,
+    workspace,
+    cwd: resolvedCwd,
+    rootEnvSafe,
     worktrees: readWorktrees(cwd),
     gitLocks: readGitLocks(cwd),
   }
@@ -150,7 +199,8 @@ export const gitFlowAdmissionViolations = (
       const root = path.split('/')[0]
       const preserved = line.startsWith('?? ')
         ? preservedUntrackedWip.has(path)
-        : line.startsWith('!! ') && preservedIgnoredWip.has(root)
+        : line.startsWith('!! ') &&
+          (preservedIgnoredWip.has(root) || (line === '!! .env' && state.rootEnvSafe === true))
       return !preserved
     })
   if (unownedWip.length > 0) violations.push('tracked or unowned WIP is present')

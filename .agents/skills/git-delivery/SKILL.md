@@ -19,6 +19,18 @@ Before any Git Flow start or publish, verify all of the following in the one can
 - Publish is allowed only for the matching `feature/*`, `release/*`, or `hotfix/*` branch.
 - The current ref matches the command. Stop on a wrong ref, wrong origin, dirty unowned WIP, or an unexpected branch.
 
+### Exact root .env preservation exception
+
+The default-deny ignored-WIP rule has one narrow exception: the exact root Git porcelain entry `!! .env`. This exception preserves the file in place; it does not grant permission to inspect, log, read, hash, move, modify, delete, or disclose its contents.
+
+Use this exception only when the current Founder-approved Work Order contains an explicit Founder attestation that this exact root .env is the intended local environment file and must remain unmodified. An OS UID match alone does not establish Founder intent.
+
+The guard additionally verifies that the command is running at the canonical repository root; the root .env is a regular file and not a symlink; its realpath is exactly the root .env path; its owner UID matches the executing process; it has one link and no group/other write bits; and two consecutive lstat metadata snapshots match for device, inode, size, timestamps, owner, link count, and mode. The check reads metadata only. Any missing, unstable, non-regular, symlinked, non-canonical, or non-owner-controlled file remains rejected.
+
+This does not verify historical file identity across prior receipts or replace the Founder attestation. The attestation and any task-specific preservation evidence remain in the Work Order.
+
+Every other ignored or untracked path remains rejected, including .env variants such as .env.local or .env.production, nested paths, other ignored roots, and any additional status entry. Tracked modifications, origin/ref/upstream mismatches, Git locks, extra worktrees, and other existing admission violations remain STOP conditions.
+
 Set `GIT_FLOW_BIN` to the absolute path of the pinned executable. Run it directly; do not rely on a shell `git flow` alias or PATH resolution. Confirm the version before use. Run the admission guard before each start or publish. Configure a local repository only after `dev` is protected:
 
 ```bash
