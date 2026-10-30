@@ -10,7 +10,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Mandatory Repository Safety & Authorization Rules
 
-- This repository may use Codex or Cursor as an explicitly admitted execution Host. Both obey one exclusive Writer and one physical checkout; preserve all tracked, ignored, generated, and untracked WIP. Only one Host may hold Source writer ownership at a time.
+- This repository may use Codex or Cursor as an explicitly admitted execution Host. The default workflow uses one canonical physical checkout with one accountable, exclusive Source Writer at a time. Writer exclusivity applies to actual write ownership of that checkout, not to open applications, idle chats, read-only agents, or unrelated sessions. Preserve all tracked, untracked, ignored, and generated WIP. Concurrent writes to the same checkout remain prohibited.
+
+- Writer ownership admission is evidence-based and proportional. A current task-scoped Founder/operator ownership attestation or an already recorded exclusive Writer lease, combined with read-only checkout identity, branch, WIP, and Git lock checks where supported, is sufficient unless contradictory evidence exists. Reentry into the same task does not require repeating Host UI inspection or obtaining a new Founder attestation when ownership remains unchanged and no credible conflict is present. Open applications, idle chats, and read-only agents do not constitute competing Writers. Do not use Computer Use to inspect unrelated Codex, Cursor, VS Code, or ChatGPT windows, or enumerate every process, solely to prove the absence of competing Writers. Escalate inspection only upon concrete conflicting ownership, unexpected mutation, locks, or other credible concurrency evidence. Inaccessible unrelated application UIs are not, by themselves, a STOP condition. Stop on actual conflicts or unresolved material ownership contradictions; preserve WIP.
+
 - Root Chat is CONTROLLER-ONLY: no Source, test, generated-file writes, mutating Git, commits, or PR publication. Start exactly one native Child Writer only after the active Issue and work order admit it. Use a separate read-only Reviewer for the immutable final PR HEAD when required and an optional read-only Solver only when the work order permits. If delegation is unavailable, STOP rather than writing in Root.
 - Before each authorized task or reentry, explicitly read `.agents/pstack-models.md` and select only the current Host profile. Model and effort selections are preferences; verify Host availability, acceptance, and role permissions. Record requested, Host-accepted, and runtime-verified routing separately. Use `NOT_OBSERVABLE` when Host evidence is unavailable.
 - The sheet is declarative guidance, not an auto-loader, model router, permission control, spending cap, or guarantee. Codex prefers the repository-local native PStack plugin and may use the explicitly verified file-direct HOW fallback defined below. Cursor may read repository-local PStack Skill text as HOW, but no Cursor plugin discovery or model routing is implied.
@@ -28,12 +31,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - When the Host does not expose a native plugin source-selection receipt, and no contradictory native source evidence exists, `PSTACK_SOURCE_MODE=FILE_DIRECT_PINNED_LOCAL` may be used strictly for repository-local engineering HOW through a two-stage admission:
 
   **Stage A — Controller read-only preflight**
-  
   Root may verify the canonical checkout, protected instruction authority, repository-local configuration, pinned provenance, and tracked Skill file identities without Source or Git mutation. This establishes preliminary source provenance only; it does not establish native plugin activation or admit a Writer.
 
   **Stage B — Native Child verification**
-  
-  After the active Founder-approved work order, exclusive ownership, and supported restrictive Host permissions are verified, Root may delegate exactly one authorized native Child. Before any Source, test, database, or Git mutation, that Child must independently complete all file-direct provenance checks below and return verifiable evidence. A successful spawn alone does not satisfy the PStack gate.
+  After the active Founder-approved work order, exclusive checkout ownership, and availability of a Host-supported restrictive permission mode are verified, Root may delegate exactly one authorized native Child. Before any Source, test, database, or Git mutation, the Child must confirm its actual effective restrictive permissions and independently complete all file-direct provenance checks below. A successful spawn alone does not satisfy the Host permission or PStack admission gates. If the effective permissions or provenance cannot be verified, STOP before mutation.
 
   **Mandatory file-direct verification checks**
 
