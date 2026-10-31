@@ -28,6 +28,7 @@ Root never writes Source, tests, generated files, or Git state, commits, or publ
 Current protected policy requires a separate native Child Reviewer with Host-enforced read-only access to the same immutable final PR HEAD. `workspace-write` does not qualify. Do not self-review or allow Reviewer Source or ref mutation. The executor guide describes future read-only lane proposals; they need lawful protected-policy adoption and do not change PR #40's current requirement. Admit an optional read-only Solver only when the Work Order permits.
 
 The executor guide may describe a future `BEHAVIORAL_READ_ONLY` lane for Founder-authorized LOW/MEDIUM work. It remains a candidate until lawful policy adoption and cannot satisfy PR #40's current Reviewer requirement.
+Independent review requires a Reviewer Child instance distinct from the Writer Child. They may share the same Root session and GitHub account.
 
 ## Safety kernel
 
