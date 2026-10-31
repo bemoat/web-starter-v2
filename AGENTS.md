@@ -15,7 +15,7 @@ This is a Next.js 16 and Payload 3 application on Cloudflare Workers. `package.j
 | Path | Purpose |
 | --- | --- |
 | `src/app/(frontend)/`, `src/app/(payload)/` | Public site and Payload admin |
-| `src/collections/`, `src/globals/`, `src/lib/` (SEO), `src/payload.config.ts` | Payload schema, SEO, and app helpers |
+| `src/collections/`, `src/lib/` (SEO), `src/payload.config.ts` | Payload schema, SEO, and app helpers |
 | `src/migrations/`, `tests/int/`, `tests/e2e/` | Database changes and integration or browser tests |
 | `wrangler.jsonc`, `playwright.config.ts`, `vitest.config.mts` | Worker bindings and test configuration |
 
