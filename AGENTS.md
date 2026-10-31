@@ -25,7 +25,7 @@ Choose focused checks only when their effects are authorized. Read the [executor
 
 Root never writes Source, tests, generated files, or Git state, commits, or publishes PRs. Use one physical checkout and one exclusive native Child Writer. Admit the Child only after task authority, Host, ownership, WIP, and PStack gates pass. Stop if no eligible Child can run.
 
-Admit each required Reviewer as a separate Child with Host-enforced read-only access to the same immutable final PR HEAD. `workspace-write` does not qualify. Admit an optional read-only Solver only when the Work Order permits.
+Current protected policy requires a separate native Child Reviewer with Host-enforced read-only access to the same immutable final PR HEAD. `workspace-write` does not qualify. Do not self-review or allow Reviewer Source or ref mutation. The executor guide describes future read-only lane proposals; they need lawful protected-policy adoption and do not change PR #40's current requirement. Admit an optional read-only Solver only when the Work Order permits.
 
 ## Safety kernel
 

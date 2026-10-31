@@ -35,6 +35,8 @@ Record `HOST_CAPABILITY` separately from `TASK_AUTHORIZED_WRITES`. `HOST_CAPABIL
 
 A Founder-approved risk decision may accept a known ambient Host boundary for one named task. Disclose the writable roots and record that decision in the Work Order. Do not carry it into another task. It never authorizes writes beyond the Work Order or overrides a higher-priority prohibition. Stop and quote the conflict if one applies.
 
+A reusable Trusted Workspace baseline is `NOT_ESTABLISHED` unless the Founder separately ratifies a named repository, its defined writable roots, and the effective Host profile and approval behavior. Future Work Orders may reference that baseline only after ratification. It records accepted ambient Host risk. It grants no task write authority. Each Work Order must still name permitted paths and operations. Recheck the baseline after a material Host, approval, risk, or environment change. Issue #38's one-off `/Users/boat/projects` risk acceptance is not reusable and grants no sibling-repository authority.
+
 Check effective Host policy once for a materially unchanged Host session. Reuse a valid receipt while the profile and task scope remain unchanged. Recheck only when a material change or concrete conflict appears.
 
 Record model routing separately:
@@ -52,7 +54,9 @@ Record three separate facts: `REVIEWER_SPAWN`, `HOST_READ_ONLY_ENFORCEMENT`, and
 
 Use a separate native Reviewer only when the Host enforces read-only access to the exact immutable final PR HEAD. Do not spawn a Reviewer under known `workspace-write`. A prompt to avoid writes, a successful spawn, or `auto_review` does not prove read-only access. Do not repeat a known-negative Host capability check while the Host session is materially unchanged. If no compliant lane is available, record the blocker and stop review delivery.
 
-An alternative review contract may be proposed for future policy. It requires a reviewer identity distinct from the Writer, verifiably read-only source and ref access, the exact immutable PR HEAD, no self-review, and a recorded verdict. A GitHub-only review lane also needs evidence that the review identity cannot mutate Source or refs. `/review`, a GitHub review, or a comment does not meet this contract by name alone. Treat each alternative as `NOT_YET_ADMITTED` until separate governance approves it and its permissions and independence are verified. It cannot approve or review the PR that introduces it.
+An alternative review contract may be proposed for future policy. It cannot replace the current protected native read-only Reviewer rule until lawful protected-policy adoption. It cannot review the PR that proposes it.
+
+A GitHub-only review lane is a future-policy candidate and remains `NOT_YET_ADMITTED` until lawful protected-policy approval and permission and independence proofs exist. The reviewer identity and its credential identity must each differ from the Writer. Verify actual least-privilege `Contents:read` and `Pull requests:read` permissions. Prove that the credential cannot write Source or refs, mutate the PR, or write a local checkout or `.git` directory. Give the reviewer the exact immutable base and head SHAs, the complete target diff, and the relevant protected Safety Kernel. Bind the findings and verdict receipt to those SHAs. If review publication needs write access, use a separate authorized publisher and keep the reviewer's findings immutable to that publisher. A GitHub Connector, review comment, or `/review` name does not prove these conditions. This candidate does not satisfy PR #40's current native read-only Reviewer gate.
 
 ## Verify repository-local PStack
 
