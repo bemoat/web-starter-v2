@@ -56,6 +56,18 @@ Use a separate native Reviewer only when the Host enforces read-only access to t
 
 An alternative review contract may be proposed for future policy. It cannot replace the current protected native read-only Reviewer rule until lawful protected-policy adoption. It cannot review the PR that proposes it.
 
+#### Candidate behavioral review lane
+
+`BEHAVIORAL_READ_ONLY` is a future candidate for Founder-authorized LOW or MEDIUM ordinary work. Admit it only after lawful policy adoption and when the Founder-approved Work Order explicitly permits behavioral review. Keep the current protected native read-only requirement for PR #40. This candidate cannot review the PR that proposes it.
+
+Use a distinct native Reviewer Child identity from the Writer. Bind the review to the exact immutable base and head SHAs. Give the Reviewer review-only instructions and no mutation tools or actions. If the Host exposes a tool with write capability, prohibit its use. The Reviewer must not write Source, tests, builds, databases, secrets, configuration, Host settings, Git state, refs, or the PR. The Reviewer must not publish a GitHub mutation.
+
+Record the actual Host profile and its enforcement truth. Under `workspace-write`, record `HOST_ENFORCEMENT=workspace-write/NOT_ENFORCED`; never describe behavioral controls as Host-enforced read-only. Capture read-only before and after snapshots of checkout identity, origin, branch, refs, HEAD, and tracked, untracked, ignored, and generated WIP inventories and integrity. Record metadata only for protected files. Never open, read, or hash root `.env` or SQLite, D1, WAL, or SHM files. Stop on any unexplained difference and do not repair it. Snapshots cannot detect transient or external writes and do not establish OS isolation.
+
+The receipt records the Reviewer identity, risk basis and Work Order, immutable base and head SHAs, findings, before and after snapshots, actual permission profile, enforcement truth, and `REVIEW_MODE=BEHAVIORAL_READ_ONLY`. Use this lane only for Founder-authorized LOW or MEDIUM ordinary work. The Reviewer cannot lower the risk classification. HIGH-risk work, secrets or credentials, security, production, deployments, infrastructure, and any stronger review contract require Host-enforced read-only access.
+
+Prefer `gpt-6.1-sol` at `medium` only when the Host advertises it. Otherwise follow the model sheet's existing fallback. Missing routing telemetry alone does not stop ordinary review when that fallback applies. Record `MODEL_ROUTING_EVIDENCE` separately from `HOST_READ_ONLY_ENFORCEMENT`.
+
 A GitHub-only review lane is a future-policy candidate and remains `NOT_YET_ADMITTED` until lawful protected-policy approval and permission and independence proofs exist. The reviewer identity and its credential identity must each differ from the Writer. Verify actual least-privilege `Contents:read` and `Pull requests:read` permissions. Prove that the credential cannot write Source or refs, mutate the PR, or write a local checkout or `.git` directory. Give the reviewer the exact immutable base and head SHAs, the complete target diff, and the relevant protected Safety Kernel. Bind the findings and verdict receipt to those SHAs. If review publication needs write access, use a separate authorized publisher and keep the reviewer's findings immutable to that publisher. A GitHub Connector, review comment, or `/review` name does not prove these conditions. This candidate does not satisfy PR #40's current native read-only Reviewer gate.
 
 ## Verify repository-local PStack
