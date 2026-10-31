@@ -31,7 +31,11 @@ Keep the preserved original D1 database and its WAL and SHM files closed and unc
 
 Read `.agents/pstack-models.md` and select the active Host profile. Verify the Host-reported effective filesystem boundary and approval mode. A no-action task under `workspace-write` is not a read-only task. `auto_review` does not authorize Full Access or an escalation.
 
-The task's Founder-approved risk decision may address a known ambient Host boundary for that task. It does not authorize writes outside the approved files and operations or override a specific higher-priority prohibition. If a real conflict remains, stop and quote it.
+Record `HOST_CAPABILITY` separately from `TASK_AUTHORIZED_WRITES`. `HOST_CAPABILITY` describes the effective sandbox, writable roots, and approval behavior. `TASK_AUTHORIZED_WRITES` lists the exact files and operations that the live Founder-approved Work Order permits. Instructions limit actions but do not enforce filesystem access.
+
+A Founder-approved risk decision may accept a known ambient Host boundary for one named task. Disclose the writable roots and record that decision in the Work Order. Do not carry it into another task. It never authorizes writes beyond the Work Order or overrides a higher-priority prohibition. Stop and quote the conflict if one applies.
+
+Check effective Host policy once for a materially unchanged Host session. Reuse a valid receipt while the profile and task scope remain unchanged. Recheck only when a material change or concrete conflict appears.
 
 Record model routing separately:
 
@@ -41,6 +45,14 @@ Record model routing separately:
 - `RUNTIME_VERIFIED` requires evidence of the model and effort served to that Child.
 
 Follow the model sheet's fallback for ordinary low or medium risk work. Record `ROUTING_ASSUMED=PARTIAL` only when that fallback applies. Never infer exact routing from a request or task label. Stop when a model or effort critical to the task is unsupported or the Host reports a conflicting substitution.
+
+### Select a review lane
+
+Record three separate facts: `REVIEWER_SPAWN`, `HOST_READ_ONLY_ENFORCEMENT`, and `MODEL_ROUTING_EVIDENCE`. A missing Reviewer spawn is not a model-routing failure. A missing model telemetry field alone does not stop ordinary review when the model sheet's fallback applies.
+
+Use a separate native Reviewer only when the Host enforces read-only access to the exact immutable final PR HEAD. Do not spawn a Reviewer under known `workspace-write`. A prompt to avoid writes, a successful spawn, or `auto_review` does not prove read-only access. Do not repeat a known-negative Host capability check while the Host session is materially unchanged. If no compliant lane is available, record the blocker and stop review delivery.
+
+An alternative review contract may be proposed for future policy. It requires a reviewer identity distinct from the Writer, verifiably read-only source and ref access, the exact immutable PR HEAD, no self-review, and a recorded verdict. A GitHub-only review lane also needs evidence that the review identity cannot mutate Source or refs. `/review`, a GitHub review, or a comment does not meet this contract by name alone. Treat each alternative as `NOT_YET_ADMITTED` until separate governance approves it and its permissions and independence are verified. It cannot approve or review the PR that introduces it.
 
 ## Verify repository-local PStack
 
