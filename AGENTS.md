@@ -25,9 +25,9 @@ Choose focused checks only when their effects are authorized. Read the [executor
 
 Root never writes Source, tests, generated files, or Git state, commits, or publishes PRs. Use one physical checkout and one exclusive native Child Writer. Admit the Child only after task authority, Host, ownership, WIP, and PStack gates pass. Stop if no eligible Child can run.
 
-Current protected policy requires a separate native Child Reviewer with Host-enforced read-only access to the same immutable final PR HEAD. `workspace-write` does not qualify. Do not self-review or allow Reviewer Source or ref mutation. The executor guide describes future read-only lane proposals; they need lawful protected-policy adoption and do not change PR #40's current requirement. Admit an optional read-only Solver only when the Work Order permits.
+Current protected policy requires a separate native Child Reviewer with Host-enforced read-only access to the same immutable final PR HEAD. `workspace-write` does not qualify. Do not self-review or allow Reviewer Source or ref mutation. Keep the currently governing protected review contract in force until a proposed alternative method is lawfully adopted. A PR that proposes an alternative review method cannot use its own unmerged amendment to satisfy its final-review requirement. Admit an optional read-only Solver only when the Work Order permits.
 
-The executor guide may describe a future `BEHAVIORAL_READ_ONLY` lane for Founder-authorized LOW/MEDIUM work. It remains a candidate until lawful policy adoption and cannot satisfy PR #40's current Reviewer requirement.
+The executor guide may describe a future `BEHAVIORAL_READ_ONLY` lane for Founder-authorized LOW/MEDIUM work. It remains a proposal until lawful adoption and cannot satisfy the currently governing protected Reviewer requirement.
 Independent review requires a Reviewer Child instance distinct from the Writer Child. They may share the same Root session and GitHub account.
 
 ## Safety kernel
@@ -55,6 +55,6 @@ The [model sheet](.agents/pstack-models.md) owns model and effort preferences. R
 
 ## Delivery
 
-Before Git Flow start or publish, read the Git Delivery Skill, use its pinned `git-flow-next` 2.1.0 executable, and pass its matching admission guard. Push normally to the verified upstream. Never force-push, finish against protected branches, bypass required checks, or merge or deploy as an agent.
+The Git Delivery Skill owns the pinned Git Flow executable and version. Follow it before each start or publish and pass its matching admission guard. Push normally to the verified upstream. Never force-push, finish against protected branches, bypass required checks, or merge or deploy as an agent.
 
 Read GitHub back after each Issue, PR, ref, CI, or review change. Require App15368 `check=PASS` on the immutable final PR HEAD, then an independent Host-enforced read-only review of that HEAD. The Founder alone merges protected branches. Follow the approved conditional checkout-release clause only after verified Founder merge.
