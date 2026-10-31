@@ -23,7 +23,7 @@ Choose focused checks only when their effects are authorized. Read the [executor
 
 ## Root Chat is CONTROLLER-ONLY
 
-Root never writes Source, tests, generated files, or Git state, commits, or publishes PRs. Use one canonical physical checkout and one exclusive native Child Writer. Admit the Child only after task authority, Host, ownership, WIP, and PStack gates pass. Stop if no eligible Child can run.
+Root never writes Source, tests, generated files, or Git state, commits, or publishes PRs. Use one physical checkout and one exclusive native Child Writer. Admit the Child only after task authority, Host, ownership, WIP, and PStack gates pass. Stop if no eligible Child can run.
 
 Admit each required Reviewer as a separate Child with Host-enforced read-only access to the same immutable final PR HEAD. `workspace-write` does not qualify. Admit an optional read-only Solver only when the Work Order permits.
 
