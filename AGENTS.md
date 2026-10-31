@@ -46,7 +46,7 @@ Admit each required Reviewer as a separate Child with Host-enforced read-only ac
 | Payload schema or API | [Payload Skill](.agents/skills/payload/SKILL.md) and its relevant reference |
 | Wrangler | [Wrangler Skill](.agents/skills/wrangler/SKILL.md) and its relevant source guide |
 | Code or review | Verified selected PStack Skill and the relevant framework guide |
-| ChatGPT Dispatcher or Architect | Protected shared Loader and only the selected role Guide at its immutable instruction SHA |
+| ChatGPT Dispatcher or Architect | Protected Loader, root, and only selected role Guide at one immutable SHA |
 
 The [model sheet](.agents/pstack-models.md) owns model and effort preferences. `package.json` owns script definitions. CI and the active GitHub ruleset own required checks and branch protection. The protected shared Loader and selected role Guide own ChatGPT Project bindings and role workflow.
 
