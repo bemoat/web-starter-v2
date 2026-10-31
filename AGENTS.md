@@ -25,9 +25,8 @@ Choose focused checks only when their effects are authorized. Read the [executor
 
 Root never writes Source, tests, generated files, or Git state, commits, or publishes PRs. Use one physical checkout and one exclusive native Child Writer. Admit the Child only after task authority, Host, ownership, WIP, and PStack gates pass. Stop if no eligible Child can run.
 
-An Independent Reviewer is a native Child Reviewer instance distinct from the Writer Child. The Writer and Reviewer may share the same Root session, execution Host, and GitHub account. The Reviewer inspects the immutable final PR HEAD and makes no Source, test, generated-output, Git, database, data, or PR mutation. Record both Child identities, the actual Host and permissions, the exact HEAD SHA, findings, verdict, and before-and-after no-mutation evidence. `workspace-write` is not read-only. Admit an optional read-only Solver only when the Work Order permits.
+An Independent Reviewer is a native Child Reviewer instance distinct from the Writer Child. The Writer and Reviewer may share the same Root session, execution Host, and GitHub account. The Reviewer inspects the immutable final PR HEAD and full PR diff and makes no Source, test, generated-output, Git, database, data, or PR mutation. Record both Child identities, the actual Host and permissions, the exact base and head SHAs, findings, verdict, and before-and-after no-mutation evidence. `workspace-write` is not read-only. Admit an optional read-only Solver only when the Work Order permits.
 
-The protected `dev` policy and Git Delivery Skill still require Host-enforced read-only review until lawful adoption. This unmerged candidate cannot authorize its own final review or merge. Do not claim the proposed policy is operative before adoption.
 
 ## Safety kernel
 

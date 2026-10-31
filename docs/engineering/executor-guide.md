@@ -54,7 +54,6 @@ Use a native Reviewer Child instance distinct from the Writer Child. The Reviewe
 
 The Reviewer makes no Source, test, generated-output, Git, database, data, or PR mutation. Record the Writer and Reviewer Child identities, actual Host and permissions, exact base and head SHAs, findings, verdict, and before-and-after evidence that no state changed. For `workspace-write`, record `HOST_ENFORCEMENT=workspace-write/NOT_ENFORCED`; never describe it as enforced read-only.
 
-The protected `dev` policy and Git Delivery Skill still require Host-enforced read-only access for final review until lawful adoption. Keep that rule in force. This unmerged candidate cannot authorize its own final review or satisfy the current protected requirement. Stop PR delivery if no Reviewer can meet the current rule.
 
 ## Verify repository-local PStack
 
@@ -101,6 +100,6 @@ Stop when scope, ownership, Host access, provenance, WIP, fixture identity, prot
 
 If the task identity, repository match, or effective authorization is missing, report `REPOSITORY_AUTHORITY_MISMATCH / STOP`.
 
-For a permitted PR, keep the diff within the Work Order. Read back the live PR and required check after each push. Require a new App15368 `check=PASS` on the exact immutable final HEAD, then an independent final-head review under the currently operative policy. The protected `dev` rule and Git Delivery Skill still require Host-enforced read-only access until lawful adoption. This candidate cannot authorize its own review. The Founder alone merges protected branches.
+For a permitted PR, keep the diff within the Work Order. Read back the live PR and required check after each push. Require a new App15368 `check=PASS` on the exact immutable final HEAD, then an independent final-head review under the currently operative policy. The Founder alone merges protected branches.
 
 After a Founder merge, release a checkout only under the exact preauthorization in the original Work Order and the Git Delivery Skill. Verify the merged SHA, origin, live protected ref, ownership, locks, all tracked and ignored WIP, and safe fast-forward path again. The former Writer does not retain ownership by default.
