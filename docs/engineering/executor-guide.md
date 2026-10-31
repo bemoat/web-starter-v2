@@ -48,27 +48,13 @@ Record model routing separately:
 
 Follow the model sheet's fallback for ordinary low or medium risk work. Record `ROUTING_ASSUMED=PARTIAL` only when that fallback applies. Never infer exact routing from a request or task label. Stop when a model or effort critical to the task is unsupported or the Host reports a conflicting substitution.
 
-### Select a review lane
+### Review the immutable final PR HEAD
 
-Record three separate facts: `REVIEWER_SPAWN`, `HOST_READ_ONLY_ENFORCEMENT`, and `MODEL_ROUTING_EVIDENCE`. A missing Reviewer spawn is not a model-routing failure. A missing model telemetry field alone does not stop ordinary review when the model sheet's fallback applies.
+Use a native Reviewer Child instance distinct from the Writer Child. The Reviewer inspects the exact immutable final PR HEAD and its diff. The Writer and Reviewer may share the same Root session, execution Host, and GitHub account.
 
-Use a separate native Reviewer only when the Host enforces read-only access to the exact immutable final PR HEAD. Do not spawn a Reviewer under known `workspace-write`. A prompt to avoid writes, a successful spawn, or `auto_review` does not prove read-only access. Do not repeat a known-negative Host capability check while the Host session is materially unchanged. If no compliant lane is available, record the blocker and stop review delivery.
+The Reviewer makes no Source, test, generated-output, Git, database, data, or PR mutation. Record the Writer and Reviewer Child identities, actual Host and permissions, exact base and head SHAs, findings, verdict, and before-and-after evidence that no state changed. For `workspace-write`, record `HOST_ENFORCEMENT=workspace-write/NOT_ENFORCED`; never describe it as enforced read-only.
 
-An alternative review contract may be proposed for future policy. It cannot replace the current protected native read-only Reviewer rule until lawful protected-policy adoption. It cannot review the PR that proposes it.
-
-#### Candidate behavioral review lane
-
-`BEHAVIORAL_READ_ONLY` is a future candidate for Founder-authorized LOW or MEDIUM ordinary work. Admit it only after lawful policy adoption and when the Founder-approved Work Order explicitly permits behavioral review. Keep the currently governing protected native read-only requirement in force until lawful adoption. A proposal cannot review or approve the PR that introduces it.
-
-Use a native Reviewer Child instance distinct from the Writer Child. The two Children may share the same Root session and GitHub account. Bind the review to the exact immutable base and head SHAs. Give the Reviewer review-only instructions and no mutation tools or actions. If the Host exposes a tool with write capability, prohibit its use. The Reviewer must not write Source, tests, builds, databases, secrets, configuration, Host settings, Git state, refs, or the PR. The Reviewer must not publish a GitHub mutation.
-
-Record the actual Host profile and its enforcement truth. Under `workspace-write`, record `HOST_ENFORCEMENT=workspace-write/NOT_ENFORCED`; never describe behavioral controls as Host-enforced read-only. Capture read-only before and after snapshots of checkout identity, origin, branch, refs, HEAD, and tracked, untracked, ignored, and generated WIP inventories and integrity. Record metadata only for protected files. Never open, read, or hash root `.env` or SQLite, D1, WAL, or SHM files. Stop on any unexplained difference and do not repair it. Snapshots cannot detect transient or external writes and do not establish OS isolation.
-
-The receipt records the Reviewer identity, risk basis and Work Order, immutable base and head SHAs, findings, before and after snapshots, actual permission profile, enforcement truth, and `REVIEW_MODE=BEHAVIORAL_READ_ONLY`. Use this lane only for Founder-authorized LOW or MEDIUM ordinary work. The Reviewer cannot lower the risk classification. HIGH-risk work, secrets or credentials, security, production, deployments, infrastructure, and any stronger review contract require Host-enforced read-only access.
-
-Prefer `gpt-6.1-sol` at `medium` only when the Host advertises it. Otherwise follow the model sheet's existing fallback. Missing routing telemetry alone does not stop ordinary review when that fallback applies. Record `MODEL_ROUTING_EVIDENCE` separately from `HOST_READ_ONLY_ENFORCEMENT`.
-
-A GitHub-only review lane is a future-policy candidate and remains `NOT_YET_ADMITTED` until lawful protected-policy approval and permission and independence proofs exist. The distinct Reviewer Child requirement above applies. Independence does not require a separate GitHub account or credential identity. Verify actual least-privilege `Contents:read` and `Pull requests:read` permissions for the credential. Prove that the credential cannot write Source or refs or mutate the PR. Separately prove that the review context cannot write a local checkout or `.git` directory. A shared account or credential qualifies only when its effective permissions satisfy this read-only gate. Give the Reviewer the exact immutable base and head SHAs, the complete target diff, and the relevant protected Safety Kernel. Bind the findings and verdict receipt to those SHAs. If review publication needs write access, use a separate authorized publisher and keep the Reviewer's findings immutable to that publisher. A GitHub Connector, review comment, or `/review` name does not prove these conditions. This candidate does not satisfy the currently governing protected native read-only Reviewer requirement.
+The protected `dev` policy and Git Delivery Skill still require Host-enforced read-only access for final review until lawful adoption. Keep that rule in force. This unmerged candidate cannot authorize its own final review or satisfy the current protected requirement. Stop PR delivery if no Reviewer can meet the current rule.
 
 ## Verify repository-local PStack
 
@@ -115,6 +101,6 @@ Stop when scope, ownership, Host access, provenance, WIP, fixture identity, prot
 
 If the task identity, repository match, or effective authorization is missing, report `REPOSITORY_AUTHORITY_MISMATCH / STOP`.
 
-For a permitted PR, keep the diff within the Work Order. Read back the live PR and required check after each push. Require a new App15368 `check=PASS` on the exact immutable final HEAD, then a separate Reviewer with independently verified Host-enforced read-only access to that same HEAD. A `workspace-write` Reviewer is not read-only. Stop if the required Reviewer cannot run under enforced read-only access. The Founder alone merges protected branches.
+For a permitted PR, keep the diff within the Work Order. Read back the live PR and required check after each push. Require a new App15368 `check=PASS` on the exact immutable final HEAD, then an independent final-head review under the currently operative policy. The protected `dev` rule and Git Delivery Skill still require Host-enforced read-only access until lawful adoption. This candidate cannot authorize its own review. The Founder alone merges protected branches.
 
 After a Founder merge, release a checkout only under the exact preauthorization in the original Work Order and the Git Delivery Skill. Verify the merged SHA, origin, live protected ref, ownership, locks, all tracked and ignored WIP, and safe fast-forward path again. The former Writer does not retain ownership by default.
