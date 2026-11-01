@@ -23,7 +23,7 @@ Stop on a mismatch, missing evidence, unexpected editor change, unowned WIP, loc
 
 Identify tracked and untracked paths with `git status --porcelain=v1 -uall`. Inspect ignored paths and generated output separately. Record existing stashes and their path lists without applying, dropping, popping, or rewriting them. Protect open-editor changes as WIP until filesystem and editor state agree.
 
-Treat `.env` as a local file. Never open, read, log, hash, move, modify, or delete it. The Git Delivery guard may preserve only the exact root entry when the current Work Order contains the Founder attestation and the guard confirms its metadata. Pass `--founder-attests-root-env-preservation` only under that attestation. The flag is not a bypass for another guard failure.
+Treat the exact root `!! .env` status entry as path-only metadata. Its appearance does not require a STOP or incident report. Preserve the local file in place. Never open, read, print, hash, copy, move, modify, delete, or disclose its contents. Git Delivery accepts this entry only after its metadata guard confirms the canonical root, regular non-symlink file, exact realpath, owner UID, one link, safe mode, and stable metadata snapshots. The revised guard does not require per-task Founder attestation.
 
 Keep the preserved original D1 database and its WAL and SHM files closed and unchanged. Never substitute, recreate, repair, checkpoint, or inspect them. A future task needs a separate Founder-approved operation that names the data and effect. A local binding name does not prove that a fixture is disposable.
 
@@ -43,10 +43,11 @@ Record model routing separately:
 
 - `REQUESTED` is the model and effort requested at dispatch.
 - `HOST_UI_REPORTED` is the identified Child's task-card selection, or `NOT_OBSERVABLE` when unavailable.
+- `CHILD_SPAWN=PASS` means the Host created one distinct, identifiable, runnable native Child. When exact model and effort are preferences, this satisfies operational model-preference admission at every risk label, including high-risk work. It does not prove model acceptance or runtime identity.
 - `HOST_ACCEPTED` requires Host-returned acceptance for that Child. A successful spawn alone is not acceptance.
 - `RUNTIME_VERIFIED` requires evidence of the model and effort served to that Child.
 
-Follow the model sheet's fallback for ordinary low or medium risk work. Record `ROUTING_ASSUMED=PARTIAL` only when that fallback applies. Never infer exact routing from a request or task label. Stop when a model or effort critical to the task is unsupported or the Host reports a conflicting substitution.
+Follow the model sheet's fallback for model preferences. Missing optional routing telemetry alone is not a STOP and does not require another spawn or probe. Never infer exact routing from a request or task label. Stop when the Host rejects the spawn, no runnable Child exists, or evidence shows a violation of an explicit hard model, effort, or budget constraint. This does not relax Host permissions, ownership, role separation, PStack provenance, or the independent Reviewer gate.
 
 ### Review the immutable final PR HEAD
 
