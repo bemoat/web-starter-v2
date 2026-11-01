@@ -1,5 +1,14 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import {
+  chmodSync,
+  linkSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -225,6 +234,69 @@ describe('Git Flow delivery admission', () => {
         'cwd is not the repository root',
       )
       expect(runGit(work, ['branch', '--list', 'feature/4-wrong-ref']).trim()).toBe('')
+    } finally {
+      rmSync(fixtureRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('admits a safe exact root .env by metadata without a Founder flag', () => {
+    const { fixtureRoot, work } = createFixture(false)
+
+    try {
+      runGit(work, ['remote', 'set-url', 'origin', 'https://github.com/bemoat/web-starter-v2.git'])
+      writeFileSync(join(work, '.git', 'info', 'exclude'), '\n.env\n.env.*\n', { flag: 'a' })
+      writeFileSync(join(work, '.env'), 'synthetic fixture value\n', { mode: 0o600 })
+
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).not.toThrow()
+      runGit(work, ['switch', '-c', 'feature/git-flow-env-fixture'])
+      expect(() => assertGitFlowAdmission('publish', 'feature', work)).not.toThrow()
+    } finally {
+      rmSync(fixtureRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('rejects unsafe root .env metadata and env variants', () => {
+    const { fixtureRoot, work } = createFixture(false)
+
+    try {
+      runGit(work, ['remote', 'set-url', 'origin', 'https://github.com/bemoat/web-starter-v2.git'])
+      writeFileSync(join(work, '.git', 'info', 'exclude'), '\n.env\n.env.*\n', { flag: 'a' })
+      writeFileSync(join(work, '.env'), 'synthetic fixture value\n', { mode: 0o600 })
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).not.toThrow()
+
+      chmodSync(join(work, '.env'), 0o666)
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+      chmodSync(join(work, '.env'), 0o600)
+
+      const hardLink = join(fixtureRoot, 'env-hard-link')
+      linkSync(join(work, '.env'), hardLink)
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+      rmSync(hardLink)
+
+      rmSync(join(work, '.env'))
+      const symlinkTarget = join(fixtureRoot, 'env-symlink-target')
+      writeFileSync(symlinkTarget, 'synthetic fixture value\n', { mode: 0o600 })
+      symlinkSync(symlinkTarget, join(work, '.env'))
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+
+      rmSync(join(work, '.env'))
+      writeFileSync(join(work, '.env.local'), 'synthetic fixture value\n', { mode: 0o600 })
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
+
+      rmSync(join(work, '.env.local'))
+      mkdirSync(join(work, '.env'))
+      writeFileSync(join(work, '.env', 'nested.local'), 'synthetic path fixture\n')
+      expect(() => assertGitFlowAdmission('start', 'feature', work)).toThrow(
+        'tracked or unowned WIP is present',
+      )
     } finally {
       rmSync(fixtureRoot, { recursive: true, force: true })
     }
