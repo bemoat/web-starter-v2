@@ -5,18 +5,35 @@ import React from 'react'
 import { fileURLToPath } from 'url'
 
 import config from '@/payload.config'
+import {
+  createRouteMetadata,
+  getHomepageStructuredData,
+  getSeoConfig,
+  serializeJsonLd,
+} from '@/lib/seo'
 import './styles.css'
+
+export function generateMetadata() {
+  return createRouteMetadata({ path: '/', publicReady: false }, getSeoConfig())
+}
 
 export default async function HomePage() {
   const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
   const { user } = await payload.auth({ headers })
+  const structuredData = getHomepageStructuredData(false, getSeoConfig())
 
   const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
 
   return (
     <div className="home">
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
+        />
+      )}
       <div className="content">
         <picture>
           <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg" />

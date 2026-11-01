@@ -1,0 +1,2 @@
+[plugins."pstack@pstack-claude"]
+enabled = true

@@ -1,5 +1,9 @@
 # Payload Cloudflare Template
 
+## Harness — ChatGPT Onboarding
+
+Set up the Architect and Dispatcher ChatGPT Projects with the [Harness — ChatGPT Onboarding manual](docs/mission-control/chatgpt-onboarding.md).
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/payloadcms/payload/tree/3.x/templates/with-cloudflare-d1)
 
 **This can only be deployed on Paid Workers right now due to size limits.** This template comes configured with the bare minimum to get started on anything you need.
@@ -19,6 +23,26 @@ To spin up this template locally, follow these steps:
 After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. Cloudflare will connect your app to a git provider such as Github and you can access your code from there.
 
 ### Local Development
+
+### SEO and public indexing
+
+The frontend stays `noindex, nofollow` unless you set `SEO_INDEXING_ENABLED=true` and provide a valid HTTPS origin in `SITE_URL`. Set `SITE_NAME`, `SITE_DESCRIPTION`, and optionally `SITE_LOCALE` and `SITE_LANGUAGE` for the site's real identity. `SITE_SOCIAL_IMAGE_URL` is optional and must point to a real image.
+
+Add metadata for a route with `createRouteMetadata` in that route's `generateMetadata` function. Pass its canonical path and mark it public only after the route contains public content. The current Payload homepage is blank and depends on authentication, so it remains noindex and the sitemap stays empty. Robots rules help crawlers discover public routes; they do not protect private content. Add real page content and route-specific metadata before enabling indexing for a customer site. Dynamic CMS and AI-specific integrations are deferred until customer content and route visibility are defined.
+
+### Native Git Flow delivery
+
+Batch B changes start from the protected `dev` branch and finish through a reviewed pull request into `dev`. Use the pinned `git-flow-next` CLI after admission confirms the canonical origin, one checkout, preserved WIP, and the expected ref:
+
+```bash
+pnpm exec tsx .agents/skills/git-delivery/scripts/admission.ts start
+git flow init --local --main=main --develop=dev --no-create-branches -d
+git flow feature start <name> --no-fetch
+pnpm exec tsx .agents/skills/git-delivery/scripts/admission.ts publish
+git flow feature publish <name>
+```
+
+Do not run `git flow finish` against protected branches. A pull request, the required `check`, and an independent final-head review control delivery.
 
 ## How it works
 
